@@ -1,0 +1,84 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+}
+
+.scrollContainer {
+  max-height: clamp(320px, 60vh, 640px);
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: var(--common-border-radius);
+  background-color: var(--background-element);
+  transition: var(--common-transition);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+.counter {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.imageWrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  border-radius: var(--common-border-radius);
+  background-color: var(--background-element);
+}
+
+@media (max-width: 768px) {
+  .scrollContainer {
+    max-height: clamp(280px, 70vh, 520px);
+  }
+}
+

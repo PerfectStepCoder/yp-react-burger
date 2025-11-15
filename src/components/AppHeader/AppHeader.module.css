@@ -1,0 +1,43 @@
+.header {
+  background-color: var(--background);
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 16px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--common-border-radius-s);
+  transition: var(--common-transition);
+}
+
+.navItem:hover {
+  background-color: var(--background-element);
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.accountLink {
+  margin-left: auto;
+}
+
