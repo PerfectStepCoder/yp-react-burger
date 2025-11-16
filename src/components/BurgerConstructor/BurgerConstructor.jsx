@@ -19,7 +19,7 @@ const BurgerConstructor = () => {
   );
 
   const topBun = buns[0];
-  const bottomBun = buns[1] || buns[0];
+  const bottomBun = topBun;
 
   const totalPrice = useMemo(() => {
     const bunTotal =
@@ -52,7 +52,9 @@ const BurgerConstructor = () => {
         <ul className={`${styles.fillings} custom-scroll mb-4`}>
           {fillings.map((item) => (
             <li className={`${styles.item} pb-4`} key={item._id}>
-              <DragIcon type="primary" />
+              <div className={styles.dragIcon}>
+                <DragIcon type="primary" />
+              </div>
               <ConstructorElement
                 text={item.name}
                 price={item.price}
@@ -91,3 +93,4 @@ const BurgerConstructor = () => {
 };
 
 export default BurgerConstructor;
+

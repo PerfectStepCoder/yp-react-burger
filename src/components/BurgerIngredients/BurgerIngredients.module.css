@@ -14,6 +14,10 @@
   scrollbar-gutter: stable;
 }
 
+.section {
+  scroll-margin-top: 80px;
+}
+
 .list {
   list-style: none;
   margin: 0;
@@ -23,51 +27,7 @@
   gap: 16px;
 }
 
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: var(--common-border-radius);
-  background-color: var(--background-element);
-  transition: var(--common-transition);
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
-}
-
-.counter {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
-.imageWrapper {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.price {
-  display: flex;
-  align-items: center;
-}
-
-.textCenter {
-  text-align: center;
-}
+/* Ingredient card styles moved to Ingredient.module.css */
 
 .empty {
   display: flex;

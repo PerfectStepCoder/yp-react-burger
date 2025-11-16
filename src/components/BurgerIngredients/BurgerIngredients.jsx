@@ -1,11 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Tab,
-  Counter,
-  CurrencyIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerIngredients.module.css';
+import Ingredient from '../Ingredient/Ingredient';
 
 const TABS = [
   { value: 'bun', label: 'Булки' },
@@ -14,32 +11,17 @@ const TABS = [
 ];
 
 const BurgerIngredients = ({ ingredients }) => {
-  const defaultTab = useMemo(() => {
-    if (ingredients.some((item) => item.type === 'bun')) {
-      return 'bun';
-    }
-    if (ingredients.some((item) => item.type === 'sauce')) {
-      return 'sauce';
-    }
-    if (ingredients.some((item) => item.type === 'main')) {
-      return 'main';
-    }
-    return 'bun';
-  }, [ingredients]);
-
-  const [currentTab, setCurrentTab] = useState(defaultTab);
-
-  useEffect(() => {
-    setCurrentTab((prevTab) =>
-      ingredients.some((item) => item.type === prevTab)
-        ? prevTab
-        : defaultTab,
-    );
-  }, [ingredients, defaultTab]);
-
-  const filteredIngredients = useMemo(
-    () => ingredients.filter((item) => item.type === currentTab),
-    [ingredients, currentTab],
+  const buns = useMemo(
+    () => ingredients.filter((i) => i.type === 'bun'),
+    [ingredients],
+  );
+  const sauces = useMemo(
+    () => ingredients.filter((i) => i.type === 'sauce'),
+    [ingredients],
+  );
+  const mains = useMemo(
+    () => ingredients.filter((i) => i.type === 'main'),
+    [ingredients],
   );
 
   return (
@@ -47,12 +29,12 @@ const BurgerIngredients = ({ ingredients }) => {
       <div className="text text_type_main-large mb-5">Соберите бургер</div>
 
       <div className={`${styles.tabs} mb-6`}>
-        {TABS.map((tab) => (
+        {TABS.map((tab, index) => (
           <Tab
             key={tab.value}
             value={tab.value}
-            active={currentTab === tab.value}
-            onClick={setCurrentTab}
+            active={index === 0}
+            onClick={() => {}}
           >
             {tab.label}
           </Tab>
@@ -60,48 +42,38 @@ const BurgerIngredients = ({ ingredients }) => {
       </div>
 
       <div className={`${styles.scrollContainer} custom-scroll`}>
-        {filteredIngredients.length > 0 ? (
-          <ul className={`${styles.list} pr-4`}>
-            {filteredIngredients.map((item) => (
+        <div className={styles.section} id="section-buns">
+          <h2 className="text text_type_main-medium mb-6">Булки</h2>
+          <ul className={`${styles.list} pr-4 mb-10`}>
+            {buns.map((item) => (
               <li key={item._id}>
-                <article className={`${styles.card} pt-6 pb-6 pl-6 pr-6`}>
-                  {!!item.count && (
-                    <div className={styles.counter}>
-                      <Counter count={item.count} size="default" />
-                    </div>
-                  )}
-
-                  <div className={`${styles.imageWrapper} mb-4`}>
-                    <img
-                      className={styles.image}
-                      src={item.image}
-                      alt={item.name}
-                    />
-                  </div>
-
-                  <div className={`${styles.price} mb-2`}>
-                    <span className="text text_type_digits-default mr-2">
-                      {item.price}
-                    </span>
-                    <CurrencyIcon type="primary" />
-                  </div>
-
-                  <p
-                    className={`text text_type_main-default text_color_primary ${styles.textCenter}`}
-                  >
-                    {item.name}
-                  </p>
-                </article>
+                <Ingredient ingredient={item} />
               </li>
             ))}
           </ul>
-        ) : (
-          <div className={`${styles.empty} pt-10 pb-10`}>
-            <p className="text text_type_main-default text_color_inactive text_center">
-              Нет ингредиентов в этой категории
-            </p>
-          </div>
-        )}
+        </div>
+
+        <div className={styles.section} id="section-sauces">
+          <h2 className="text text_type_main-medium mb-6">Соусы</h2>
+          <ul className={`${styles.list} pr-4 mb-10`}>
+            {sauces.map((item) => (
+              <li key={item._id}>
+                <Ingredient ingredient={item} />
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className={styles.section} id="section-mains">
+          <h2 className="text text_type_main-medium mb-6">Начинки</h2>
+          <ul className={`${styles.list} pr-4`}>
+            {mains.map((item) => (
+              <li key={item._id}>
+                <Ingredient ingredient={item} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
