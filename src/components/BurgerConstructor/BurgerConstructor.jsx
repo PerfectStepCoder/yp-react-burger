@@ -40,7 +40,7 @@ const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
   return (
     <section className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}>
       <div className={styles.constructor}>
-        <div className="mb-4">
+        <div className={`${styles.bunWrapper} mb-4`}>
           <ConstructorElement
             type="top"
             isLocked
@@ -66,7 +66,7 @@ const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
         </ul>
 
         {bottomBun && (
-          <div className="mb-4">
+          <div className={`${styles.bunWrapper} mb-4`}>
             <ConstructorElement
               type="bottom"
               isLocked
