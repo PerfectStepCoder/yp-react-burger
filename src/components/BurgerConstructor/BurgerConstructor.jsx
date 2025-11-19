@@ -6,6 +6,7 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { IngredientType } from '../../utils/types';
 import styles from './BurgerConstructor.module.css';
 
 const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
@@ -98,15 +99,7 @@ const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
 };
 
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(['bun', 'sauce', 'main']).isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-    }),
-  ),
+  ingredients: PropTypes.arrayOf(IngredientType),
   onOrderClick: PropTypes.func,
 };
 

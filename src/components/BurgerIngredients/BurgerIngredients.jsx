@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { IngredientType } from '../../utils/types';
 import styles from './BurgerIngredients.module.css';
 import Ingredient from '../Ingredient/Ingredient';
 
@@ -82,16 +83,7 @@ const BurgerIngredients = ({ ingredients, onIngredientClick }) => {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(['bun', 'sauce', 'main']).isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      count: PropTypes.number,
-    }),
-  ),
+  ingredients: PropTypes.arrayOf(IngredientType),
   onIngredientClick: PropTypes.func,
 };
 

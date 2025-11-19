@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IngredientType } from '../../utils/types';
 import Modal from '../Modal/Modal';
 import styles from './IngredientDetails.module.css';
 
@@ -65,16 +66,7 @@ const IngredientDetails = ({ ingredient, onClose }) => {
 };
 
 IngredientDetails.propTypes = {
-  ingredient: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    image_large: PropTypes.string,
-    calories: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-  }),
+  ingredient: IngredientType,
   onClose: PropTypes.func.isRequired,
 };
 
