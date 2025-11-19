@@ -1,21 +1,21 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import {
   ConstructorElement,
   Button,
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import ingredientsData from '../../utils/data';
 import styles from './BurgerConstructor.module.css';
 
-const BurgerConstructor = () => {
+const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
   const buns = useMemo(
-    () => ingredientsData.filter((item) => item.type === 'bun'),
-    [],
+    () => ingredients.filter((item) => item.type === 'bun'),
+    [ingredients],
   );
   const fillings = useMemo(
-    () => ingredientsData.filter((item) => item.type !== 'bun'),
-    [],
+    () => ingredients.filter((item) => item.type !== 'bun'),
+    [ingredients],
   );
 
   const topBun = buns[0];
@@ -84,12 +84,35 @@ const BurgerConstructor = () => {
           </span>
           <CurrencyIcon type="primary" />
         </div>
-        <Button htmlType="button" type="primary" size="large">
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrderClick}
+        >
           Оформить заказ
         </Button>
       </div>
     </section>
   );
+};
+
+BurgerConstructor.propTypes = {
+  ingredients: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      type: PropTypes.oneOf(['bun', 'sauce', 'main']).isRequired,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+    }),
+  ),
+  onOrderClick: PropTypes.func,
+};
+
+BurgerConstructor.defaultProps = {
+  ingredients: [],
+  onOrderClick: null,
 };
 
 export default BurgerConstructor;

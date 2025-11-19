@@ -10,7 +10,7 @@ const TABS = [
   { value: 'main', label: 'Начинки' },
 ];
 
-const BurgerIngredients = ({ ingredients }) => {
+const BurgerIngredients = ({ ingredients, onIngredientClick }) => {
   const buns = useMemo(
     () => ingredients.filter((i) => i.type === 'bun'),
     [ingredients],
@@ -47,7 +47,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {buns.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -58,7 +58,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {sauces.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -69,7 +69,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4`}>
             {mains.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -92,8 +92,10 @@ BurgerIngredients.propTypes = {
       count: PropTypes.number,
     }),
   ),
+  onIngredientClick: PropTypes.func,
 };
 
 BurgerIngredients.defaultProps = {
   ingredients: [],
+  onIngredientClick: null,
 };
