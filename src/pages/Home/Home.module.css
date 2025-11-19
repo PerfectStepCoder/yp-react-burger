@@ -1,0 +1,26 @@
+.main {
+  min-height: calc(100vh - 88px);
+  background-color: var(--background-alt);
+}
+
+.columns {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

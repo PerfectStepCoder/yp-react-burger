@@ -1,0 +1,44 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+}
+
+.scrollContainer {
+  max-height: clamp(320px, 60vh, 640px);
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+
+.section {
+  scroll-margin-top: 80px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* Ingredient card styles moved to Ingredient.module.css */
+
+.empty {
+  display: flex;
+  justify-content: center;
+  border-radius: var(--common-border-radius);
+  background-color: var(--background-element);
+}
+
+@media (max-width: 768px) {
+  .scrollContainer {
+    max-height: clamp(280px, 70vh, 520px);
+  }
+}
+
