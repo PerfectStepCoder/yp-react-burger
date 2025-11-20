@@ -4,6 +4,7 @@ import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredie
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
+import Modal from '../../components/Modal/Modal';
 import { useIngredients } from '../../hooks/useIngredients';
 import { MOCK_ORDER_NUMBER } from '../../utils/mockData';
 import styles from './Home.module.css';
@@ -78,13 +79,14 @@ function App() {
         </div>
       </main>
       {selectedIngredient && (
-        <IngredientDetails
-          ingredient={selectedIngredient}
-          onClose={handleCloseIngredientModal}
-        />
+        <Modal title="Детали ингредиента" onClose={handleCloseIngredientModal}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
       )}
       {orderNumber !== null && (
-        <OrderDetails orderNumber={orderNumber} onClose={handleCloseOrderModal} />
+        <Modal title="" onClose={handleCloseOrderModal}>
+          <OrderDetails orderNumber={orderNumber} />
+        </Modal>
       )}
     </>
   );
