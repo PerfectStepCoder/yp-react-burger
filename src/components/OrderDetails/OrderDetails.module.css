@@ -1,0 +1,50 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 40px;
+}
+
+.orderNumber {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.iconWrapper {
+  width: 120px;
+  height: 120px;
+  margin: 60px 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconCircle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.iconCircle::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--background);
+  z-index: 0;
+}
+
+.iconCircle svg {
+  position: relative;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
+}
+

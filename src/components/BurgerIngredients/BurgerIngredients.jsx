@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { IngredientType } from '../../utils/types';
 import styles from './BurgerIngredients.module.css';
 import Ingredient from '../Ingredient/Ingredient';
 
@@ -10,7 +11,7 @@ const TABS = [
   { value: 'main', label: 'Начинки' },
 ];
 
-const BurgerIngredients = ({ ingredients }) => {
+const BurgerIngredients = ({ ingredients, onIngredientClick }) => {
   const buns = useMemo(
     () => ingredients.filter((i) => i.type === 'bun'),
     [ingredients],
@@ -47,7 +48,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {buns.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -58,7 +59,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {sauces.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -69,7 +70,7 @@ const BurgerIngredients = ({ ingredients }) => {
           <ul className={`${styles.list} pr-4`}>
             {mains.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} />
+                <Ingredient ingredient={item} onClick={onIngredientClick} />
               </li>
             ))}
           </ul>
@@ -82,18 +83,11 @@ const BurgerIngredients = ({ ingredients }) => {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(['bun', 'sauce', 'main']).isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      count: PropTypes.number,
-    }),
-  ),
+  ingredients: PropTypes.arrayOf(IngredientType),
+  onIngredientClick: PropTypes.func,
 };
 
 BurgerIngredients.defaultProps = {
   ingredients: [],
+  onIngredientClick: null,
 };

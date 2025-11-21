@@ -1,21 +1,22 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import {
   ConstructorElement,
   Button,
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import ingredientsData from '../../utils/data';
+import { IngredientType } from '../../utils/types';
 import styles from './BurgerConstructor.module.css';
 
-const BurgerConstructor = () => {
+const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
   const buns = useMemo(
-    () => ingredientsData.filter((item) => item.type === 'bun'),
-    [],
+    () => ingredients.filter((item) => item.type === 'bun'),
+    [ingredients],
   );
   const fillings = useMemo(
-    () => ingredientsData.filter((item) => item.type !== 'bun'),
-    [],
+    () => ingredients.filter((item) => item.type !== 'bun'),
+    [ingredients],
   );
 
   const topBun = buns[0];
@@ -39,7 +40,7 @@ const BurgerConstructor = () => {
   return (
     <section className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}>
       <div className={styles.constructor}>
-        <div className="mb-4">
+        <div className={`${styles.bunWrapper} mb-4`}>
           <ConstructorElement
             type="top"
             isLocked
@@ -65,7 +66,7 @@ const BurgerConstructor = () => {
         </ul>
 
         {bottomBun && (
-          <div className="mb-4">
+          <div className={`${styles.bunWrapper} mb-4`}>
             <ConstructorElement
               type="bottom"
               isLocked
@@ -84,12 +85,27 @@ const BurgerConstructor = () => {
           </span>
           <CurrencyIcon type="primary" />
         </div>
-        <Button htmlType="button" type="primary" size="large">
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrderClick}
+        >
           Оформить заказ
         </Button>
       </div>
     </section>
   );
+};
+
+BurgerConstructor.propTypes = {
+  ingredients: PropTypes.arrayOf(IngredientType),
+  onOrderClick: PropTypes.func,
+};
+
+BurgerConstructor.defaultProps = {
+  ingredients: [],
+  onOrderClick: null,
 };
 
 export default BurgerConstructor;
