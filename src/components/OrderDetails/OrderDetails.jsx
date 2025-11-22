@@ -7,7 +7,9 @@ const OrderDetails = ({ orderNumber }) => {
   return (
     <div className={styles.content}>
       <div className={styles.orderNumber}>
-        <span className="text text_type_digits-large">{orderNumber}</span>
+        <span className="text text_type_digits-large">
+          {orderNumber ?? '—'}
+        </span>
       </div>
       <p className="text text_type_main-medium mb-15">идентификатор заказа</p>
       <div className={styles.iconWrapper}>
@@ -26,7 +28,11 @@ const OrderDetails = ({ orderNumber }) => {
 };
 
 OrderDetails.propTypes = {
-  orderNumber: PropTypes.number.isRequired,
+  orderNumber: PropTypes.number,
+};
+
+OrderDetails.defaultProps = {
+  orderNumber: null,
 };
 
 export default OrderDetails;

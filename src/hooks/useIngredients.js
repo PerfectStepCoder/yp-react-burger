@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../utils/api';
+import { request } from '../utils/request';
 
 export const useIngredients = () => {
   const [ingredients, setIngredients] = useState([]);
@@ -12,18 +12,7 @@ export const useIngredients = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/ingredients`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error('API returned unsuccessful response');
-        }
-
+        const data = await request('/ingredients');
         setIngredients(data.data || []);
       } catch (err) {
         setError(err.message || 'Failed to fetch ingredients');

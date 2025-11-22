@@ -1,81 +1,135 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
 import {
   ConstructorElement,
   Button,
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IngredientType } from '../../utils/types';
+import {
+  setConstructorBun,
+  addIngredientToConstructor,
+  removeIngredientFromConstructor,
+  moveIngredientInConstructor,
+} from '../../services/actions/burgerConstructorActions';
+import {
+  incrementIngredientCount,
+  decrementIngredientCount,
+} from '../../services/actions/ingredientsActions';
 import styles from './BurgerConstructor.module.css';
+import ConstructorFilling from './ConstructorFilling';
 
-const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
-  const buns = useMemo(
-    () => ingredients.filter((item) => item.type === 'bun'),
-    [ingredients],
-  );
-  const fillings = useMemo(
-    () => ingredients.filter((item) => item.type !== 'bun'),
-    [ingredients],
-  );
-
-  const topBun = buns[0];
-  const bottomBun = topBun;
+const BurgerConstructor = ({ onOrderClick }) => {
+  const dispatch = useDispatch();
+  const bun = useSelector((state) => state.burgerConstructor.bun);
+  const fillings = useSelector((state) => state.burgerConstructor.fillings);
 
   const totalPrice = useMemo(() => {
-    const bunTotal =
-      (topBun?.price ?? 0) + (bottomBun?.price ?? 0);
-    const fillingsTotal = fillings.reduce(
-      (sum, item) => sum + item.price,
-      0,
-    );
-
+    const bunTotal = bun ? bun.price * 2 : 0;
+    const fillingsTotal = fillings.reduce((sum, item) => sum + item.price, 0);
     return bunTotal + fillingsTotal;
-  }, [topBun, bottomBun, fillings]);
+  }, [bun, fillings]);
 
-  if (!topBun) {
-    return null;
-  }
+  const handleDrop = useCallback(
+    (ingredient) => {
+      if (ingredient.type === 'bun') {
+        if (bun && bun._id === ingredient._id) {
+          return;
+        }
+        if (bun) {
+          dispatch(decrementIngredientCount(bun._id, 2));
+        }
+        dispatch(setConstructorBun(ingredient));
+        dispatch(incrementIngredientCount(ingredient._id, 2));
+      } else {
+        dispatch(addIngredientToConstructor(ingredient));
+        dispatch(incrementIngredientCount(ingredient._id));
+      }
+    },
+    [bun, dispatch],
+  );
+
+  const handleRemoveIngredient = useCallback(
+    (uuid, ingredientId) => {
+      dispatch(removeIngredientFromConstructor(uuid));
+      dispatch(decrementIngredientCount(ingredientId));
+    },
+    [dispatch],
+  );
+
+  const moveCard = useCallback(
+    (fromIndex, toIndex) => {
+      dispatch(moveIngredientInConstructor(fromIndex, toIndex));
+    },
+    [dispatch],
+  );
+
+  const [, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop: handleDrop,
+  });
+
+  const isOrderDisabled = !bun || fillings.length === 0;
 
   return (
-    <section className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}>
+    <section
+      ref={dropRef}
+      className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}
+    >
       <div className={styles.constructor}>
         <div className={`${styles.bunWrapper} mb-4`}>
-          <ConstructorElement
-            type="top"
-            isLocked
-            text={`${topBun.name} (верх)`}
-            price={topBun.price}
-            thumbnail={topBun.image}
-          />
+          {bun ? (
+            <ConstructorElement
+              type="top"
+              isLocked
+              text={`${bun.name} (верх)`}
+              price={bun.price}
+              thumbnail={bun.image}
+            />
+          ) : (
+            <div className={`${styles.placeholder} text text_type_main-default`}>
+              Перетащите булку сюда
+            </div>
+          )}
         </div>
 
-        <ul className={`${styles.fillings} custom-scroll mb-4`}>
-          {fillings.map((item) => (
-            <li className={`${styles.item} pb-4`} key={item._id}>
-              <div className={styles.dragIcon}>
-                <DragIcon type="primary" />
-              </div>
-              <ConstructorElement
-                text={item.name}
-                price={item.price}
-                thumbnail={item.image}
+        {fillings.length > 0 ? (
+          <ul className={`${styles.fillings} custom-scroll mb-4`}>
+            {fillings.map((item, index) => (
+              <ConstructorFilling
+                key={item.uuid}
+                index={index}
+                item={item}
+                moveCard={moveCard}
+                onRemove={handleRemoveIngredient}
               />
-            </li>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        ) : (
+          <div
+            className={`${styles.placeholder} text text_type_main-default text_color_inactive mb-4`}
+          >
+            Перетащите ингредиенты сюда
+          </div>
+        )}
 
-        {bottomBun && (
-          <div className={`${styles.bunWrapper} mb-4`}>
+        <div className={`${styles.bunWrapper} mb-4`}>
+          {bun ? (
             <ConstructorElement
               type="bottom"
               isLocked
-              text={`${bottomBun.name} (низ)`}
-              price={bottomBun.price}
-              thumbnail={bottomBun.image}
+              text={`${bun.name} (низ)`}
+              price={bun.price}
+              thumbnail={bun.image}
             />
-          </div>
-        )}
+          ) : (
+            <div className={`${styles.placeholder} text text_type_main-default`}>
+              Перетащите булку сюда
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={styles.summary}>
@@ -90,6 +144,7 @@ const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
           type="primary"
           size="large"
           onClick={onOrderClick}
+          disabled={isOrderDisabled}
         >
           Оформить заказ
         </Button>
@@ -99,12 +154,10 @@ const BurgerConstructor = ({ ingredients = [], onOrderClick }) => {
 };
 
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType),
   onOrderClick: PropTypes.func,
 };
 
 BurgerConstructor.defaultProps = {
-  ingredients: [],
   onOrderClick: null,
 };
 
