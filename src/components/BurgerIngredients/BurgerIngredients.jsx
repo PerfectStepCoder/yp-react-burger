@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IngredientType } from '../../utils/types';
 import styles from './BurgerIngredients.module.css';
 import Ingredient from '../Ingredient/Ingredient';
 
@@ -11,7 +11,8 @@ const TABS = [
   { value: 'main', label: 'Начинки' },
 ];
 
-const BurgerIngredients = ({ ingredients, onIngredientClick }) => {
+const BurgerIngredients = ({ onIngredientClick }) => {
+  const ingredients = useSelector((state) => state.ingredients.items);
   const [activeTab, setActiveTab] = useState(TABS[0].value);
   const containerRef = useRef(null);
   const bunsRef = useRef(null);
@@ -135,11 +136,9 @@ const BurgerIngredients = ({ ingredients, onIngredientClick }) => {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType),
   onIngredientClick: PropTypes.func,
 };
 
 BurgerIngredients.defaultProps = {
-  ingredients: [],
   onIngredientClick: null,
 };

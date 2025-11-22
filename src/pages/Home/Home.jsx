@@ -25,9 +25,7 @@ import styles from './Home.module.css';
 
 function App() {
   const dispatch = useDispatch();
-  const { items: ingredients, isLoading, error } = useSelector(
-    (state) => state.ingredients,
-  );
+  const { isLoading, error } = useSelector((state) => state.ingredients);
   const currentIngredient = useSelector(
     (state) => state.currentIngredient.item,
   );
@@ -87,10 +85,7 @@ function App() {
       <DndProvider backend={HTML5Backend}>
         <div className={styles.columns}>
           <div className={styles.leftColumn}>
-            <BurgerIngredients
-              ingredients={ingredients}
-              onIngredientClick={handleIngredientClick}
-            />
+            <BurgerIngredients onIngredientClick={handleIngredientClick} />
           </div>
           <div className={styles.rightColumn}>
             <BurgerConstructor onOrderClick={handleOrderClick} />
