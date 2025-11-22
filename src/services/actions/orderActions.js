@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../../utils/api';
+import { request } from '../../utils/request';
 
 export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
@@ -27,23 +27,13 @@ export const createOrder = (ingredientIds) => async (dispatch) => {
   dispatch(createOrderRequest());
 
   try {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const data = await request('/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ ingredients: ingredientIds }),
     });
-
-    if (!response.ok) {
-      throw new Error(`Не удалось создать заказ: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error('API вернуло неудачный ответ при создании заказа');
-    }
 
     dispatch(createOrderSuccess(data.order));
   } catch (error) {

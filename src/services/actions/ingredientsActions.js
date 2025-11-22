@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../../utils/api';
+import { request } from '../../utils/request';
 import fallbackIngredients from '../../utils/data';
 
 export const FETCH_INGREDIENTS_REQUEST = 'FETCH_INGREDIENTS_REQUEST';
@@ -40,18 +40,7 @@ export const fetchIngredients = () => async (dispatch) => {
   dispatch(fetchIngredientsRequest());
 
   try {
-    const response = await fetch(`${API_BASE_URL}/ingredients`);
-
-    if (!response.ok) {
-      throw new Error(`Не удалось загрузить ингредиенты: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error('API вернуло неудачный ответ');
-    }
-
+    const data = await request('/ingredients');
     dispatch(fetchIngredientsSuccess(data.data));
   } catch (error) {
     if (fallbackIngredients && fallbackIngredients.length > 0) {
