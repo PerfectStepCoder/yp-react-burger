@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+

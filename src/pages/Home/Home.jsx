@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import AppHeader from '../../components/AppHeader/AppHeader';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
@@ -23,9 +23,11 @@ import {
 import { resetIngredientCounts } from '../../services/actions/ingredientsActions';
 import styles from './Home.module.css';
 
-function App() {
+function Home() {
   const dispatch = useDispatch();
-  const { isLoading, error } = useSelector((state) => state.ingredients);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isLoading, error, items: ingredients } = useSelector((state) => state.ingredients);
   const currentIngredient = useSelector(
     (state) => state.currentIngredient.item,
   );
@@ -33,21 +35,41 @@ function App() {
   const fillings = useSelector((state) => state.burgerConstructor.fillings);
   const order = useSelector((state) => state.order.order);
   const isOrderLoading = useSelector((state) => state.order.isLoading);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
 
+  useEffect(() => {
+    // Если мы на главной странице и есть текущий ингредиент, очищаем его
+    if (location.pathname === '/' && currentIngredient) {
+      dispatch(clearCurrentIngredient());
+    }
+  }, [location.pathname, dispatch, currentIngredient]);
+
   const handleIngredientClick = (ingredient) => {
+    // Устанавливаем ингредиент в Redux и меняем URL
     dispatch(setCurrentIngredient(ingredient));
+    // Меняем URL через navigate с replace: true
+    navigate(`/ingredients/${ingredient._id}`, { replace: true, state: { fromHome: true } });
   };
 
   const handleCloseIngredientModal = () => {
     dispatch(clearCurrentIngredient());
+    // Возвращаемся на главную страницу
+    navigate('/', { replace: true });
   };
 
   const handleOrderClick = () => {
     if (!bun) {
+      return;
+    }
+
+    // Проверяем авторизацию
+    if (!isAuthenticated && !user) {
+      // Редиректим на /login с сохранением текущего маршрута
+      navigate('/login', { state: { from: location } });
       return;
     }
 
@@ -97,7 +119,6 @@ function App() {
 
   return (
     <>
-      <AppHeader />
       <main className={`${styles.main} pt-10 pb-10`}>{renderContent()}</main>
       {currentIngredient && (
         <Modal title="Детали ингредиента" onClose={handleCloseIngredientModal}>
@@ -118,4 +139,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
