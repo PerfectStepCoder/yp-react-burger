@@ -1,50 +1,72 @@
-import { Link, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './AppHeader.module.css';
 
 const AppHeader = () => {
   const location = useLocation();
-  const isProfilePage = location.pathname.startsWith('/profile');
 
   return (
     <header className={`${styles.header} pt-4 pb-4`}>
       <div className={`${styles.container} pl-10 pr-10`}>
         <nav className={styles.nav}>
-          <Link
+          <NavLink
             to="/"
-            className={`${styles.navItem} pl-5 pr-5`}
+            className={({ isActive }) => 
+              `${styles.navItem} pl-5 pr-5 ${isActive ? styles.active : ''}`
+            }
+            end
           >
-            <BurgerIcon type="primary" />
-            <span className="text text_type_main-default text_color_primary pl-2">
-              Конструктор
-            </span>
-          </Link>
-          <Link
+            {({ isActive }) => (
+              <>
+                <BurgerIcon type={isActive ? 'primary' : 'secondary'} />
+                <span className={`text text_type_main-default pl-2 ${
+                  isActive ? 'text_color_primary' : 'text_color_inactive'
+                }`}>
+                  Конструктор
+                </span>
+              </>
+            )}
+          </NavLink>
+          <NavLink
             to="/feed"
-            className={`${styles.navItem} pl-5 pr-5`}
+            className={({ isActive }) => 
+              `${styles.navItem} pl-5 pr-5 ${isActive ? styles.active : ''}`
+            }
           >
-            <ListIcon type="secondary" />
-            <span className="text text_type_main-default text_color_inactive pl-2">
-              Лента заказов
-            </span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <ListIcon type={isActive ? 'primary' : 'secondary'} />
+                <span className={`text text_type_main-default pl-2 ${
+                  isActive ? 'text_color_primary' : 'text_color_inactive'
+                }`}>
+                  Лента заказов
+                </span>
+              </>
+            )}
+          </NavLink>
         </nav>
 
         <div className={styles.logoWrapper}>
           <Logo />
         </div>
 
-        <Link
+        <NavLink
           to="/profile"
-          className={`${styles.navItem} ${styles.accountLink} pl-5 pr-5`}
+          className={({ isActive }) => 
+            `${styles.navItem} ${styles.accountLink} pl-5 pr-5 ${isActive ? styles.active : ''}`
+          }
         >
-          <ProfileIcon type={isProfilePage ? 'primary' : 'secondary'} />
-          <span className={`text text_type_main-default pl-2 ${
-            isProfilePage ? 'text_color_primary' : 'text_color_inactive'
-          }`}>
-            Личный кабинет
-          </span>
-        </Link>
+          {({ isActive }) => (
+            <>
+              <ProfileIcon type={isActive ? 'primary' : 'secondary'} />
+              <span className={`text text_type_main-default pl-2 ${
+                isActive ? 'text_color_primary' : 'text_color_inactive'
+              }`}>
+                Личный кабинет
+              </span>
+            </>
+          )}
+        </NavLink>
       </div>
     </header>
   );
