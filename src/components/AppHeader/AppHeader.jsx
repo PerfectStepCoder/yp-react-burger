@@ -1,10 +1,8 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './AppHeader.module.css';
 
 const AppHeader = () => {
-  const location = useLocation();
-
   return (
     <header className={`${styles.header} pt-4 pb-4`}>
       <div className={`${styles.container} pl-10 pr-10`}>
@@ -47,7 +45,9 @@ const AppHeader = () => {
         </nav>
 
         <div className={styles.logoWrapper}>
-          <Logo />
+          <Link to="/">
+            <Logo />
+          </Link>
         </div>
 
         <NavLink
