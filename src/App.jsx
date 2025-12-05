@@ -27,9 +27,11 @@ const IngredientModal = () => {
   const currentIngredient = useSelector((state) => state.currentIngredient.item);
 
   // Модальное окно показывается если:
-  // 1. Есть currentIngredient в Redux
+  // 1. Есть currentIngredient в Redux (установлен при клике или прямом переходе)
   // 2. И мы на странице /ingredients/:id
-  const shouldShowModal = currentIngredient && location.pathname.startsWith('/ingredients/');
+  const shouldShowModal = 
+    currentIngredient && 
+    location.pathname.startsWith('/ingredients/');
 
   const handleClose = () => {
     dispatch(clearCurrentIngredient());
