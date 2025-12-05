@@ -3,19 +3,19 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { login } from '../../services/actions/authActions';
+import { useForm } from '../../hooks/useForm';
 import styles from './Login.module.css';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const { values, handleChange } = useForm({ email: '', password: '' });
   const { isLoading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dispatch(login(email, password));
+    const result = await dispatch(login(values.email, values.password));
     if (result.success) {
       // Всегда редиректим на главную страницу, чтобы конструктор не сбрасывался
       navigate('/', { replace: true });
@@ -30,8 +30,8 @@ const Login = () => {
           <Input
             type="email"
             placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange}
             name="email"
             size="default"
             required
@@ -39,8 +39,8 @@ const Login = () => {
         </div>
         <div className="mb-6">
           <PasswordInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={handleChange}
             name="password"
             size="default"
             required
