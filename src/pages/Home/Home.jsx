@@ -5,14 +5,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
-import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Modal from '../../components/Modal/Modal';
-import { fetchIngredients } from '../../services/actions/ingredientsActions';
-import {
-  setCurrentIngredient,
-  clearCurrentIngredient,
-} from '../../services/actions/currentIngredientActions';
+import { setCurrentIngredient } from '../../services/actions/currentIngredientActions';
 import {
   createOrder,
   resetOrder,
@@ -27,38 +22,21 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoading, error, items: ingredients } = useSelector((state) => state.ingredients);
-  const currentIngredient = useSelector(
-    (state) => state.currentIngredient.item,
-  );
+  const { isLoading, error } = useSelector((state) => state.ingredients);
   const bun = useSelector((state) => state.burgerConstructor.bun);
   const fillings = useSelector((state) => state.burgerConstructor.fillings);
   const order = useSelector((state) => state.order.order);
   const isOrderLoading = useSelector((state) => state.order.isLoading);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
-  useEffect(() => {
-    // Если мы на главной странице и есть текущий ингредиент, очищаем его
-    if (location.pathname === '/' && currentIngredient) {
-      dispatch(clearCurrentIngredient());
-    }
-  }, [location.pathname, dispatch, currentIngredient]);
-
   const handleIngredientClick = (ingredient) => {
     // Устанавливаем ингредиент в Redux и меняем URL
     dispatch(setCurrentIngredient(ingredient));
-    // Меняем URL через navigate с replace: true
-    navigate(`/ingredients/${ingredient._id}`, { replace: true, state: { fromHome: true } });
-  };
-
-  const handleCloseIngredientModal = () => {
-    dispatch(clearCurrentIngredient());
-    // Возвращаемся на главную страницу
-    navigate('/', { replace: true });
+    // Меняем URL через navigate с replace: true, сохраняя информацию о текущей странице
+    navigate(`/ingredients/${ingredient._id}`, { 
+      replace: true, 
+      state: { from: location.pathname } 
+    });
   };
 
   const handleOrderClick = () => {
@@ -120,11 +98,6 @@ function Home() {
   return (
     <>
       <main className={`${styles.main} pt-10 pb-10`}>{renderContent()}</main>
-      {currentIngredient && (
-        <Modal title="Детали ингредиента" onClose={handleCloseIngredientModal}>
-          <IngredientDetails ingredient={currentIngredient} />
-        </Modal>
-      )}
       {order && (
         <Modal title="" onClose={handleCloseOrderModal}>
           <OrderDetails orderNumber={order.number} />

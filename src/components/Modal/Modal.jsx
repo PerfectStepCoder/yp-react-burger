@@ -14,11 +14,25 @@ const Modal = ({ title, onClose, children }) => {
     };
 
     document.addEventListener('keydown', handleEscape);
+    
+    // Сохраняем текущее значение overflow для восстановления
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    
+    // Вычисляем ширину скроллбара, чтобы избежать сдвига контента
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    
+    // Блокируем скролл, но сохраняем padding для компенсации скроллбара
     document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      // Восстанавливаем оригинальные значения
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
     };
   }, [onClose]);
 
