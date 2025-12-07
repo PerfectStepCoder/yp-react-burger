@@ -18,28 +18,19 @@ import IngredientDetails from './components/IngredientDetails/IngredientDetails'
 import { initAuth } from './services/actions/authActions';
 import { fetchIngredients } from './services/actions/ingredientsActions';
 
-// Компонент для модального окна, который использует хуки роутера
+// Компонент для модального окна с деталями ингредиента
 const IngredientModal = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleClose = () => {
     // Возвращаемся к предыдущему пути при закрытии модалки
     navigate(-1);
   };
 
-  // Используем текущий location для маршрута модального окна
   return (
-    <Routes location={location}>
-      <Route
-        path="/ingredients/:id"
-        element={
-          <Modal title="Детали ингредиента" onClose={handleClose}>
-            <IngredientDetails />
-          </Modal>
-        }
-      />
-    </Routes>
+    <Modal title="Детали ингредиента" onClose={handleClose}>
+      <IngredientDetails />
+    </Modal>
   );
 };
 
@@ -56,9 +47,10 @@ function App() {
   return (
     <>
       <AppHeader />
+      {/* Первый Routes - только для страниц (без модальных окон) */}
       <Routes location={background || location}>
         <Route path="/" element={<Home />} />
-        <Route path="/ingredients/:id" element={<IngredientPage />} />
+        {!background && <Route path="/ingredients/:id" element={<IngredientPage />} />}
         <Route
           path="/login"
           element={
@@ -111,7 +103,17 @@ function App() {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {background && <IngredientModal />}
+      {/* Второй Routes - только для модальных окон (попапов), показываются только при наличии background */}
+      {background && (
+        <Routes>
+          <Route
+            path="/ingredients/:id"
+            element={
+              <IngredientModal />
+            }
+          />
+        </Routes>
+      )}
     </>
   );
 }
