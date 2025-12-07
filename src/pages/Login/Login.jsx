@@ -17,8 +17,10 @@ const Login = () => {
     e.preventDefault();
     const result = await dispatch(login(values.email, values.password));
     if (result.success) {
-      // Всегда редиректим на главную страницу, чтобы конструктор не сбрасывался
-      navigate('/', { replace: true });
+      // Редиректим на маршрут, с которого пользователь был перенаправлен на логин,
+      // или на главную страницу, если такого маршрута нет
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     }
   };
 

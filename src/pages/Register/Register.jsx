@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { register } from '../../services/actions/authActions';
@@ -8,6 +8,7 @@ import styles from './Register.module.css';
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -17,7 +18,10 @@ const Register = () => {
     e.preventDefault();
     const result = await dispatch(register(email, password, name));
     if (result.success) {
-      navigate('/');
+      // Редиректим на маршрут, с которого пользователь был перенаправлен на регистрацию,
+      // или на главную страницу, если такого маршрута нет
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     }
   };
 
