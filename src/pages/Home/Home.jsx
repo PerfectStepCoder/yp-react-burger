@@ -7,7 +7,6 @@ import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredie
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Modal from '../../components/Modal/Modal';
-import { setCurrentIngredient } from '../../services/actions/currentIngredientActions';
 import {
   createOrder,
   resetOrder,
@@ -28,16 +27,6 @@ function Home() {
   const order = useSelector((state) => state.order.order);
   const isOrderLoading = useSelector((state) => state.order.isLoading);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-
-  const handleIngredientClick = (ingredient) => {
-    // Устанавливаем ингредиент в Redux и меняем URL
-    dispatch(setCurrentIngredient(ingredient));
-    // Меняем URL через navigate с replace: true, сохраняя информацию о текущей странице
-    navigate(`/ingredients/${ingredient._id}`, { 
-      replace: true, 
-      state: { from: location.pathname } 
-    });
-  };
 
   const handleOrderClick = () => {
     if (!bun) {
@@ -85,7 +74,7 @@ function Home() {
       <DndProvider backend={HTML5Backend}>
         <div className={styles.columns}>
           <div className={styles.leftColumn}>
-            <BurgerIngredients onIngredientClick={handleIngredientClick} />
+            <BurgerIngredients />
           </div>
           <div className={styles.rightColumn}>
             <BurgerConstructor onOrderClick={handleOrderClick} />

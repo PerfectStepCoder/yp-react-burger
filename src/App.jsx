@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AppHeader from './components/AppHeader/AppHeader';
 import ProtectedRouteElement from './components/ProtectedRouteElement/ProtectedRouteElement';
 import Home from './pages/Home/Home';
@@ -17,49 +17,36 @@ import Modal from './components/Modal/Modal';
 import IngredientDetails from './components/IngredientDetails/IngredientDetails';
 import { initAuth } from './services/actions/authActions';
 import { fetchIngredients } from './services/actions/ingredientsActions';
-import { clearCurrentIngredient } from './services/actions/currentIngredientActions';
 
 // Компонент для модального окна, который использует хуки роутера
 const IngredientModal = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const currentIngredient = useSelector((state) => state.currentIngredient.item);
-
-  // Модальное окно показывается если:
-  // 1. Есть currentIngredient в Redux (установлен при клике или прямом переходе)
-  // 2. И мы на странице /ingredients/:id
-  const shouldShowModal = 
-    currentIngredient && 
-    location.pathname.startsWith('/ingredients/');
 
   const handleClose = () => {
-    dispatch(clearCurrentIngredient());
-    // Если мы на странице /ingredients/:id, возвращаемся на страницу, с которой открыли модальное окно
-    if (location.pathname.startsWith('/ingredients/')) {
-      // Получаем информацию о предыдущей странице из location.state или sessionStorage
-      const fromPage = location.state?.from || sessionStorage.getItem('ingredientFrom') || '/';
-      // Очищаем sessionStorage
-      sessionStorage.removeItem('ingredientFrom');
-      // Возвращаемся на предыдущую страницу
-      navigate(fromPage, { replace: true });
-    }
-    // Иначе просто закрываем модальное окно (URL остается прежним)
+    // Возвращаемся к предыдущему пути при закрытии модалки
+    navigate(-1);
   };
 
-  if (!shouldShowModal) {
-    return null;
-  }
-
+  // Используем текущий location для маршрута модального окна
   return (
-    <Modal title="Детали ингредиента" onClose={handleClose}>
-      <IngredientDetails ingredient={currentIngredient} />
-    </Modal>
+    <Routes location={location}>
+      <Route
+        path="/ingredients/:id"
+        element={
+          <Modal title="Детали ингредиента" onClose={handleClose}>
+            <IngredientDetails />
+          </Modal>
+        }
+      />
+    </Routes>
   );
 };
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const background = location.state?.background;
 
   useEffect(() => {
     dispatch(initAuth());
@@ -67,9 +54,9 @@ function App() {
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
+    <>
       <AppHeader />
-      <Routes>
+      <Routes location={background || location}>
         <Route path="/" element={<Home />} />
         <Route path="/ingredients/:id" element={<IngredientPage />} />
         <Route
@@ -124,10 +111,19 @@ function App() {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <IngredientModal />
+      {background && <IngredientModal />}
+    </>
+  );
+}
+
+// Обертка для использования хуков роутера
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <App />
     </BrowserRouter>
   );
 }
 
-export default App;
+export default AppWrapper;
 
