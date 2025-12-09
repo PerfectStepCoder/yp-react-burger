@@ -19,7 +19,7 @@ const Login = () => {
     if (result.success) {
       // Редиректим на маршрут, с которого пользователь был перенаправлен на логин,
       // или на главную страницу, если такого маршрута нет
-      const from = location.state?.from?.pathname || '/';
+      const from = location.state?.from || { pathname: '/' };
       navigate(from, { replace: true });
     }
   };

@@ -9,9 +9,11 @@ const ProtectedRouteElement = ({ children, onlyUnauth = false }) => {
 
   // Если маршрут только для неавторизованных (login, register, forgot-password)
   if (onlyUnauth) {
-    // Если пользователь авторизован, редиректим на главную
+    // Если пользователь авторизован, редиректим на маршрут, с которого он был перенаправлен,
+    // или на главную страницу, если такого маршрута нет
     if (isAuthenticated || user) {
-      return <Navigate to="/" replace />;
+      const from = location.state?.from || { pathname: '/' };
+      return <Navigate to={from} replace />;
     }
     // Если не авторизован, разрешаем доступ
     return children;
@@ -33,6 +35,7 @@ ProtectedRouteElement.propTypes = {
 };
 
 export default ProtectedRouteElement;
+
 
 
 
