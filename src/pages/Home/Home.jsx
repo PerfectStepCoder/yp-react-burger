@@ -1,18 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import AppHeader from '../../components/AppHeader/AppHeader';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
-import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Modal from '../../components/Modal/Modal';
-import { fetchIngredients } from '../../services/actions/ingredientsActions';
-import {
-  setCurrentIngredient,
-  clearCurrentIngredient,
-} from '../../services/actions/currentIngredientActions';
 import {
   createOrder,
   resetOrder,
@@ -23,31 +17,26 @@ import {
 import { resetIngredientCounts } from '../../services/actions/ingredientsActions';
 import styles from './Home.module.css';
 
-function App() {
+function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { isLoading, error } = useSelector((state) => state.ingredients);
-  const currentIngredient = useSelector(
-    (state) => state.currentIngredient.item,
-  );
   const bun = useSelector((state) => state.burgerConstructor.bun);
   const fillings = useSelector((state) => state.burgerConstructor.fillings);
   const order = useSelector((state) => state.order.order);
   const isOrderLoading = useSelector((state) => state.order.isLoading);
-
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
-  const handleIngredientClick = (ingredient) => {
-    dispatch(setCurrentIngredient(ingredient));
-  };
-
-  const handleCloseIngredientModal = () => {
-    dispatch(clearCurrentIngredient());
-  };
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleOrderClick = () => {
     if (!bun) {
+      return;
+    }
+
+    // Проверяем авторизацию
+    if (!isAuthenticated && !user) {
+      // Редиректим на /login с сохранением текущего маршрута
+      navigate('/login', { state: { from: location } });
       return;
     }
 
@@ -85,7 +74,7 @@ function App() {
       <DndProvider backend={HTML5Backend}>
         <div className={styles.columns}>
           <div className={styles.leftColumn}>
-            <BurgerIngredients onIngredientClick={handleIngredientClick} />
+            <BurgerIngredients />
           </div>
           <div className={styles.rightColumn}>
             <BurgerConstructor onOrderClick={handleOrderClick} />
@@ -97,13 +86,7 @@ function App() {
 
   return (
     <>
-      <AppHeader />
       <main className={`${styles.main} pt-10 pb-10`}>{renderContent()}</main>
-      {currentIngredient && (
-        <Modal title="Детали ингредиента" onClose={handleCloseIngredientModal}>
-          <IngredientDetails ingredient={currentIngredient} />
-        </Modal>
-      )}
       {order && (
         <Modal title="" onClose={handleCloseOrderModal}>
           <OrderDetails orderNumber={order.number} />
@@ -118,4 +101,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

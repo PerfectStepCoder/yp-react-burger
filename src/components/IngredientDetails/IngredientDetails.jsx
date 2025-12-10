@@ -1,9 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { IngredientType } from '../../utils/types';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styles from './IngredientDetails.module.css';
 
-const IngredientDetails = ({ ingredient }) => {
+const IngredientDetails = () => {
+  const { id } = useParams();
+  const ingredients = useSelector((state) => state.ingredients.items);
+  const ingredient = ingredients.find((item) => item._id === id);
+
   if (!ingredient) {
     return null;
   }
@@ -60,14 +64,6 @@ const IngredientDetails = ({ ingredient }) => {
       </div>
     </div>
   );
-};
-
-IngredientDetails.propTypes = {
-  ingredient: IngredientType,
-};
-
-IngredientDetails.defaultProps = {
-  ingredient: null,
 };
 
 export default IngredientDetails;

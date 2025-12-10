@@ -1,0 +1,41 @@
+.container {
+  padding: 40px 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  gap: 60px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  gap: 36px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.navLink:hover {
+  opacity: 0.7;
+}
+
+.logoutButton {
+  text-align: left;
+}
+
+.main {
+  flex: 1;
+}
+

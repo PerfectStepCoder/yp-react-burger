@@ -11,7 +11,7 @@ const TABS = [
   { value: 'main', label: 'Начинки' },
 ];
 
-const BurgerIngredients = ({ onIngredientClick }) => {
+const BurgerIngredients = () => {
   const ingredients = useSelector((state) => state.ingredients.items);
   const [activeTab, setActiveTab] = useState(TABS[0].value);
   const containerRef = useRef(null);
@@ -101,7 +101,7 @@ const BurgerIngredients = ({ onIngredientClick }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {buns.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} onClick={onIngredientClick} />
+                <Ingredient ingredient={item} />
               </li>
             ))}
           </ul>
@@ -112,7 +112,7 @@ const BurgerIngredients = ({ onIngredientClick }) => {
           <ul className={`${styles.list} pr-4 mb-10`}>
             {sauces.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} onClick={onIngredientClick} />
+                <Ingredient ingredient={item} />
               </li>
             ))}
           </ul>
@@ -123,7 +123,7 @@ const BurgerIngredients = ({ onIngredientClick }) => {
           <ul className={`${styles.list} pr-4`}>
             {mains.map((item) => (
               <li key={item._id}>
-                <Ingredient ingredient={item} onClick={onIngredientClick} />
+                <Ingredient ingredient={item} />
               </li>
             ))}
           </ul>
@@ -134,11 +134,3 @@ const BurgerIngredients = ({ onIngredientClick }) => {
 };
 
 export default BurgerIngredients;
-
-BurgerIngredients.propTypes = {
-  onIngredientClick: PropTypes.func,
-};
-
-BurgerIngredients.defaultProps = {
-  onIngredientClick: null,
-};
