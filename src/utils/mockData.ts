@@ -1,4 +1,3 @@
 // Тестовые данные для модального окна заказа
 // В будущем эти данные будут приходить с сервера
-export const MOCK_ORDER_NUMBER = 12345;
-
+export const MOCK_ORDER_NUMBER: number = 12345;

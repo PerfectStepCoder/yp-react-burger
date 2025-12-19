@@ -1,12 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import {
   ConstructorElement,
   Button,
   CurrencyIcon,
-  DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import {
   setConstructorBun,
@@ -20,11 +18,16 @@ import {
 } from '../../services/actions/ingredientsActions';
 import styles from './BurgerConstructor.module.css';
 import ConstructorFilling from './ConstructorFilling';
+import { Ingredient } from '../../utils/types';
 
-const BurgerConstructor = ({ onOrderClick }) => {
+interface BurgerConstructorProps {
+  onOrderClick?: () => void;
+}
+
+const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) => {
   const dispatch = useDispatch();
-  const bun = useSelector((state) => state.burgerConstructor.bun);
-  const fillings = useSelector((state) => state.burgerConstructor.fillings);
+  const bun = useSelector((state: any) => state.burgerConstructor.bun as Ingredient | null);
+  const fillings = useSelector((state: any) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
 
   const totalPrice = useMemo(() => {
     const bunTotal = bun ? bun.price * 2 : 0;
@@ -33,7 +36,7 @@ const BurgerConstructor = ({ onOrderClick }) => {
   }, [bun, fillings]);
 
   const handleDrop = useCallback(
-    (ingredient) => {
+    (ingredient: Ingredient) => {
       if (ingredient.type === 'bun') {
         if (bun && bun._id === ingredient._id) {
           return;
@@ -52,7 +55,7 @@ const BurgerConstructor = ({ onOrderClick }) => {
   );
 
   const handleRemoveIngredient = useCallback(
-    (uuid, ingredientId) => {
+    (uuid: string, ingredientId: string) => {
       dispatch(removeIngredientFromConstructor(uuid));
       dispatch(decrementIngredientCount(ingredientId));
     },
@@ -60,7 +63,7 @@ const BurgerConstructor = ({ onOrderClick }) => {
   );
 
   const moveCard = useCallback(
-    (fromIndex, toIndex) => {
+    (fromIndex: number, toIndex: number) => {
       dispatch(moveIngredientInConstructor(fromIndex, toIndex));
     },
     [dispatch],
@@ -75,10 +78,10 @@ const BurgerConstructor = ({ onOrderClick }) => {
 
   return (
     <section
-      ref={dropRef}
+      ref={dropRef as any}
       className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}
     >
-      <div className={styles.constructor}>
+      <div className={String(styles.constructor)}>
         <div className={`${styles.bunWrapper} mb-4`}>
           {bun ? (
             <ConstructorElement
@@ -153,13 +156,4 @@ const BurgerConstructor = ({ onOrderClick }) => {
   );
 };
 
-BurgerConstructor.propTypes = {
-  onOrderClick: PropTypes.func,
-};
-
-BurgerConstructor.defaultProps = {
-  onOrderClick: null,
-};
-
 export default BurgerConstructor;
-

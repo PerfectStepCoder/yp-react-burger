@@ -1,23 +1,25 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useSelector } from '../../hooks/useRedux';
 import styles from './BurgerIngredients.module.css';
 import Ingredient from '../Ingredient/Ingredient';
+import { Ingredient as IngredientType } from '../../utils/types';
 
 const TABS = [
   { value: 'bun', label: 'Булки' },
   { value: 'sauce', label: 'Соусы' },
   { value: 'main', label: 'Начинки' },
-];
+] as const;
 
-const BurgerIngredients = () => {
-  const ingredients = useSelector((state) => state.ingredients.items);
-  const [activeTab, setActiveTab] = useState(TABS[0].value);
-  const containerRef = useRef(null);
-  const bunsRef = useRef(null);
-  const saucesRef = useRef(null);
-  const mainsRef = useRef(null);
+type TabValue = typeof TABS[number]['value'];
+
+const BurgerIngredients: React.FC = () => {
+  const ingredients = useSelector((state: any) => state.ingredients.items as IngredientType[]);
+  const [activeTab, setActiveTab] = useState<TabValue>(TABS[0].value);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bunsRef = useRef<HTMLDivElement>(null);
+  const saucesRef = useRef<HTMLDivElement>(null);
+  const mainsRef = useRef<HTMLDivElement>(null);
   const buns = useMemo(
     () => ingredients.filter((i) => i.type === 'bun'),
     [ingredients],
@@ -39,16 +41,16 @@ const BurgerIngredients = () => {
 
     const containerTop = container.getBoundingClientRect().top;
     const sections = [
-      { value: 'bun', ref: bunsRef },
-      { value: 'sauce', ref: saucesRef },
-      { value: 'main', ref: mainsRef },
+      { value: 'bun' as const, ref: bunsRef },
+      { value: 'sauce' as const, ref: saucesRef },
+      { value: 'main' as const, ref: mainsRef },
     ];
 
     const distances = sections
       .filter(({ ref }) => ref.current)
       .map(({ value, ref }) => ({
         value,
-        distance: Math.abs(ref.current.getBoundingClientRect().top - containerTop),
+        distance: Math.abs(ref.current!.getBoundingClientRect().top - containerTop),
       }));
 
     if (distances.length === 0) {

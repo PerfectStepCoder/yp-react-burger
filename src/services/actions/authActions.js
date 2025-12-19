@@ -63,6 +63,7 @@ const logoutSuccess = () => ({
   type: LOGOUT_SUCCESS,
 });
 
+// eslint-disable-next-line no-unused-vars
 const logoutFailure = (error) => ({
   type: LOGOUT_FAILURE,
   payload: error,

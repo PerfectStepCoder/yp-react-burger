@@ -1,13 +1,25 @@
 import React, { useRef } from 'react';
-import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerConstructor.module.css';
+import { ConstructorIngredient } from '../../utils/types';
 
-const ConstructorFilling = ({ item, index, moveCard, onRemove }) => {
-  const ref = useRef(null);
+interface ConstructorFillingProps {
+  item: ConstructorIngredient;
+  index: number;
+  moveCard: (fromIndex: number, toIndex: number) => void;
+  onRemove: (uuid: string, ingredientId: string) => void;
+}
 
-  const [{ handlerId }, drop] = useDrop({
+interface DragItem {
+  uuid: string;
+  index: number;
+}
+
+const ConstructorFilling: React.FC<ConstructorFillingProps> = ({ item, index, moveCard, onRemove }) => {
+  const ref = useRef<HTMLLIElement>(null);
+
+  const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: string | symbol | null }>({
     accept: 'constructor-filling',
     collect: (monitor) => ({
       handlerId: monitor.getHandlerId(),
@@ -27,6 +39,7 @@ const ConstructorFilling = ({ item, index, moveCard, onRemove }) => {
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) return;
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
@@ -42,7 +55,7 @@ const ConstructorFilling = ({ item, index, moveCard, onRemove }) => {
     },
   });
 
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag] = useDrag<DragItem, void, { isDragging: boolean }>({
     type: 'constructor-filling',
     item: () => ({ uuid: item.uuid, index }),
     collect: (monitor) => ({
@@ -74,18 +87,4 @@ const ConstructorFilling = ({ item, index, moveCard, onRemove }) => {
   );
 };
 
-ConstructorFilling.propTypes = {
-  item: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
-  index: PropTypes.number.isRequired,
-  moveCard: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
-};
-
 export default ConstructorFilling;
-

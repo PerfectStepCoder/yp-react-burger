@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from './hooks/useRedux';
 import AppHeader from './components/AppHeader/AppHeader';
 import ProtectedRouteElement from './components/ProtectedRouteElement/ProtectedRouteElement';
 import Home from './pages/Home/Home';
@@ -19,7 +19,7 @@ import { initAuth } from './services/actions/authActions';
 import { fetchIngredients } from './services/actions/ingredientsActions';
 
 // Компонент для модального окна с деталями ингредиента
-const IngredientModal = () => {
+const IngredientModal: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -37,7 +37,7 @@ const IngredientModal = () => {
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const background = location.state?.background;
+  const background = (location.state as any)?.background;
 
   useEffect(() => {
     dispatch(initAuth());
@@ -128,4 +128,3 @@ function AppWrapper() {
 }
 
 export default AppWrapper;
-

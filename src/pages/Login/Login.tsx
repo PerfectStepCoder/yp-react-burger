@@ -1,25 +1,25 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import { login } from '../../services/actions/authActions';
 import { useForm } from '../../hooks/useForm';
 import styles from './Login.module.css';
 
-const Login = () => {
+const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { values, handleChange } = useForm({ email: '', password: '' });
-  const { isLoading, error } = useSelector((state) => state.auth);
+  const { isLoading, error } = useSelector((state: any) => state.auth);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await dispatch(login(values.email, values.password));
-    if (result.success) {
+    if ((result as any).success) {
       // Редиректим на маршрут, с которого пользователь был перенаправлен на логин,
       // или на главную страницу, если такого маршрута нет
-      const from = location.state?.from || { pathname: '/' };
+      const from = (location.state as any)?.from || { pathname: '/' };
       navigate(from, { replace: true });
     }
   };
@@ -37,6 +37,7 @@ const Login = () => {
             name="email"
             size="default"
             required
+            {...({} as any)}
           />
         </div>
         <div className="mb-6">
@@ -83,4 +84,3 @@ const Login = () => {
 };
 
 export default Login;
-

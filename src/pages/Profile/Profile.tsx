@@ -1,12 +1,12 @@
 import React from 'react';
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../hooks/useRedux';
 import { logout } from '../../services/actions/authActions';
 import ProfileSettings from './ProfileSettings/ProfileSettings';
 import ProfileOrders from './ProfileOrders/ProfileOrders';
 import styles from './Profile.module.css';
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -60,4 +60,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
