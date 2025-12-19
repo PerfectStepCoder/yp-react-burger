@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import { forgotPassword, resetPasswordReset } from '../../services/actions/passwordActions';
 import styles from './ForgotPassword.module.css';
 
 const ForgotPassword: React.FC = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = React.useState<string>('');
   const { isLoading, error, message } = useSelector((state: any) => state.password);

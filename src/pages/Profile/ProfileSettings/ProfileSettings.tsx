@@ -1,12 +1,12 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from '../../../hooks/useRedux';
 import { getUser, updateUser } from '../../../services/actions/authActions';
 import styles from './ProfileSettings.module.css';
 import { User } from '../../../utils/types';
 
 const ProfileSettings: React.FC = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const { user, isLoading, error } = useSelector((state: any) => state.auth);
   const [name, setName] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');

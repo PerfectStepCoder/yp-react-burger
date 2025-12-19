@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import {
   ConstructorElement,
   Button,
@@ -25,7 +25,7 @@ interface BurgerConstructorProps {
 }
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const bun = useSelector((state: any) => state.burgerConstructor.bun as Ingredient | null);
   const fillings = useSelector((state: any) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
 

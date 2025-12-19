@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import { register } from '../../services/actions/authActions';
 import styles from './Register.module.css';
 
 const Register: React.FC = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [name, setName] = React.useState<string>('');

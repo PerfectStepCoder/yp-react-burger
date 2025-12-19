@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from './hooks/useRedux';
 import AppHeader from './components/AppHeader/AppHeader';
 import ProtectedRouteElement from './components/ProtectedRouteElement/ProtectedRouteElement';
 import Home from './pages/Home/Home';
@@ -35,7 +35,7 @@ const IngredientModal: React.FC = () => {
 };
 
 function App() {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const location = useLocation();
   const background = (location.state as any)?.background;
 

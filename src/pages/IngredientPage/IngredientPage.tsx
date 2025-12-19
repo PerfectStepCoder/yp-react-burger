@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../hooks/useRedux';
 import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
 import styles from './IngredientPage.module.css';
 import { Ingredient } from '../../utils/types';

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
@@ -19,7 +19,7 @@ import styles from './Home.module.css';
 import { Ingredient, Order } from '../../utils/types';
 
 function Home() {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoading, error } = useSelector((state: any) => state.ingredients);

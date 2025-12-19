@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from '../../hooks/useRedux';
 import { login } from '../../services/actions/authActions';
 import { useForm } from '../../hooks/useForm';
 import styles from './Login.module.css';
 
 const Login: React.FC = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { values, handleChange } = useForm({ email: '', password: '' });

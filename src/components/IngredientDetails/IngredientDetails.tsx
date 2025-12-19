@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../hooks/useRedux';
 import styles from './IngredientDetails.module.css';
 import { Ingredient } from '../../utils/types';
 
