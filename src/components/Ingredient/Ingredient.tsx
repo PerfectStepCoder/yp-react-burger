@@ -1,12 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IngredientType } from '../../utils/types';
+import { Ingredient as IngredientType } from '../../utils/types';
 import styles from './Ingredient.module.css';
 
-const Ingredient = ({ ingredient }) => {
+interface IngredientProps {
+  ingredient: IngredientType;
+}
+
+const Ingredient: React.FC<IngredientProps> = ({ ingredient }) => {
   const { name, price, image, count, _id } = ingredient;
   const location = useLocation();
 
@@ -18,7 +21,7 @@ const Ingredient = ({ ingredient }) => {
     }),
   }), [ingredient]);
 
-  const handleClick = (e) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Предотвращаем переход при перетаскивании
     if (isDragging) {
       e.preventDefault();
@@ -36,14 +39,14 @@ const Ingredient = ({ ingredient }) => {
       onClick={handleClick}
     >
       <article
-        ref={dragRef}
+        ref={dragRef as any}
         className={`${styles.card} pt-6 pb-6 pl-6 pr-6`}
         style={{
           cursor: 'pointer',
           opacity: isDragging ? 0.5 : 1,
         }}
       >
-      {count > 0 && (
+      {count && count > 0 && (
         <div className={styles.counter}>
           <Counter count={count} size="default" />
         </div>
@@ -66,9 +69,4 @@ const Ingredient = ({ ingredient }) => {
   );
 };
 
-Ingredient.propTypes = {
-  ingredient: IngredientType.isRequired,
-};
-
 export default Ingredient;
-

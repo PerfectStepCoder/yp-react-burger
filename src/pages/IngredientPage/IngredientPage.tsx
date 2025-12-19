@@ -3,11 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
 import styles from './IngredientPage.module.css';
+import { Ingredient } from '../../utils/types';
 
-const IngredientPage = () => {
-  const { id } = useParams();
+const IngredientPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const ingredients = useSelector((state) => state.ingredients.items);
+  const ingredients = useSelector((state: any) => state.ingredients.items as Ingredient[]);
   const ingredient = ingredients.find((item) => item._id === id);
 
   if (!ingredient) {
@@ -32,4 +33,3 @@ const IngredientPage = () => {
 };
 
 export default IngredientPage;
-

@@ -5,22 +5,22 @@ import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burg
 import { register } from '../../services/actions/authActions';
 import styles from './Register.module.css';
 
-const Register = () => {
-  const dispatch = useDispatch();
+const Register: React.FC = () => {
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const location = useLocation();
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const { isLoading, error } = useSelector((state) => state.auth);
+  const [name, setName] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const { isLoading, error } = useSelector((state: any) => state.auth);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await dispatch(register(email, password, name));
-    if (result.success) {
+    if ((result as any).success) {
       // Редиректим на маршрут, с которого пользователь был перенаправлен на регистрацию,
       // или на главную страницу, если такого маршрута нет
-      const from = location.state?.from || { pathname: '/' };
+      const from = (location.state as any)?.from || { pathname: '/' };
       navigate(from, { replace: true });
     }
   };
@@ -38,6 +38,7 @@ const Register = () => {
             name="name"
             size="default"
             required
+            {...({} as any)}
           />
         </div>
         <div className="mb-6">
@@ -49,6 +50,7 @@ const Register = () => {
             name="email"
             size="default"
             required
+            {...({} as any)}
           />
         </div>
         <div className="mb-6">
@@ -89,4 +91,3 @@ const Register = () => {
 };
 
 export default Register;
-

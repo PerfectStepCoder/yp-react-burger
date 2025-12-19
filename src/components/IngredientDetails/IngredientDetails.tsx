@@ -2,10 +2,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from './IngredientDetails.module.css';
+import { Ingredient } from '../../utils/types';
 
-const IngredientDetails = () => {
-  const { id } = useParams();
-  const ingredients = useSelector((state) => state.ingredients.items);
+const IngredientDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const ingredients = useSelector((state: any) => state.ingredients.items as Ingredient[]);
   const ingredient = ingredients.find((item) => item._id === id);
 
   if (!ingredient) {
@@ -67,4 +68,3 @@ const IngredientDetails = () => {
 };
 
 export default IngredientDetails;
-

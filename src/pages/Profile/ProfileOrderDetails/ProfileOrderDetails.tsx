@@ -2,8 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './ProfileOrderDetails.module.css';
 
-const ProfileOrderDetails = () => {
-  const { id } = useParams();
+const ProfileOrderDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
 
   return (
     <div className={styles.container}>
@@ -16,7 +16,3 @@ const ProfileOrderDetails = () => {
 };
 
 export default ProfileOrderDetails;
-
-
-
-

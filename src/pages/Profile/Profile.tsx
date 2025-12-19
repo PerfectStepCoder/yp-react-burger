@@ -6,8 +6,8 @@ import ProfileSettings from './ProfileSettings/ProfileSettings';
 import ProfileOrders from './ProfileOrders/ProfileOrders';
 import styles from './Profile.module.css';
 
-const Profile = () => {
-  const dispatch = useDispatch();
+const Profile: React.FC = () => {
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -60,4 +60,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

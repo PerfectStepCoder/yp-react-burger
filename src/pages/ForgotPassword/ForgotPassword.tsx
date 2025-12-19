@@ -5,20 +5,20 @@ import { Button, Input } from '@ya.praktikum/react-developer-burger-ui-component
 import { forgotPassword, resetPasswordReset } from '../../services/actions/passwordActions';
 import styles from './ForgotPassword.module.css';
 
-const ForgotPassword = () => {
-  const dispatch = useDispatch();
+const ForgotPassword: React.FC = () => {
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const { isLoading, error, message } = useSelector((state) => state.password);
+  const [email, setEmail] = React.useState<string>('');
+  const { isLoading, error, message } = useSelector((state: any) => state.password);
 
   React.useEffect(() => {
     dispatch(resetPasswordReset());
   }, [dispatch]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await dispatch(forgotPassword(email));
-    if (result.success) {
+    if ((result as any).success) {
       // Передаем флаг, что пользователь пришел с /forgot-password
       navigate('/reset-password', { state: { fromForgotPassword: true } });
     }
@@ -37,6 +37,7 @@ const ForgotPassword = () => {
             name="email"
             size="default"
             required
+            {...({} as any)}
           />
         </div>
         {error && (
@@ -73,4 +74,3 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
-

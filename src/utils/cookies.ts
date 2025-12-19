@@ -1,10 +1,10 @@
 /**
  * Устанавливает куку
- * @param {string} name - имя куки
- * @param {string} value - значение куки
- * @param {number} days - количество дней до истечения (по умолчанию 7)
+ * @param name - имя куки
+ * @param value - значение куки
+ * @param days - количество дней до истечения (по умолчанию 7)
  */
-export const setCookie = (name, value, days = 7) => {
+export const setCookie = (name: string, value: string, days: number = 7): void => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
@@ -12,10 +12,10 @@ export const setCookie = (name, value, days = 7) => {
 
 /**
  * Получает значение куки
- * @param {string} name - имя куки
- * @returns {string|null} - значение куки или null, если не найдена
+ * @param name - имя куки
+ * @returns значение куки или null, если не найдена
  */
-export const getCookie = (name) => {
+export const getCookie = (name: string): string | null => {
   const nameEQ = `${name}=`;
   const ca = document.cookie.split(';');
   for (let i = 0; i < ca.length; i++) {
@@ -28,12 +28,8 @@ export const getCookie = (name) => {
 
 /**
  * Удаляет куку
- * @param {string} name - имя куки
+ * @param name - имя куки
  */
-export const deleteCookie = (name) => {
+export const deleteCookie = (name: string): void => {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
 };
-
-
-
-

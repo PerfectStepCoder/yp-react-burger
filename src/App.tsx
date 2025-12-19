@@ -19,7 +19,7 @@ import { initAuth } from './services/actions/authActions';
 import { fetchIngredients } from './services/actions/ingredientsActions';
 
 // Компонент для модального окна с деталями ингредиента
-const IngredientModal = () => {
+const IngredientModal: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -35,9 +35,9 @@ const IngredientModal = () => {
 };
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
   const location = useLocation();
-  const background = location.state?.background;
+  const background = (location.state as any)?.background;
 
   useEffect(() => {
     dispatch(initAuth());
@@ -128,4 +128,3 @@ function AppWrapper() {
 }
 
 export default AppWrapper;
-

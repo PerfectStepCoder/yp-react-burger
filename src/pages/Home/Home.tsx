@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
@@ -16,17 +16,18 @@ import {
 } from '../../services/actions/burgerConstructorActions';
 import { resetIngredientCounts } from '../../services/actions/ingredientsActions';
 import styles from './Home.module.css';
+import { Ingredient, Order } from '../../utils/types';
 
 function Home() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoading, error } = useSelector((state) => state.ingredients);
-  const bun = useSelector((state) => state.burgerConstructor.bun);
-  const fillings = useSelector((state) => state.burgerConstructor.fillings);
-  const order = useSelector((state) => state.order.order);
-  const isOrderLoading = useSelector((state) => state.order.isLoading);
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isLoading, error } = useSelector((state: any) => state.ingredients);
+  const bun = useSelector((state: any) => state.burgerConstructor.bun as Ingredient | null);
+  const fillings = useSelector((state: any) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
+  const order = useSelector((state: any) => state.order.order as Order | null);
+  const isOrderLoading = useSelector((state: any) => state.order.isLoading as boolean);
+  const { isAuthenticated, user } = useSelector((state: any) => state.auth);
 
   const handleOrderClick = () => {
     if (!bun) {
