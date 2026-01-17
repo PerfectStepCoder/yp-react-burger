@@ -1,0 +1,95 @@
+.main {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.orderCard {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--background-element);
+  border-radius: var(--common-border-radius-s);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--common-transition);
+}
+
+.orderCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.orderName {
+  color: var(--text-primary-color);
+}
+
+.statusDone {
+  color: var(--colors-interface-success);
+}
+
+.statusPending {
+  color: var(--colors-interface-accent);
+}
+
+.statusCreated {
+  color: var(--text-primary-color);
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ingredientsPreview {
+  display: flex;
+  align-items: center;
+  gap: -8px;
+}
+
+.ingredientIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  border: 2px solid var(--background-element);
+  margin-left: -16px;
+}
+
+.ingredientIcon:first-child {
+  margin-left: 0;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
