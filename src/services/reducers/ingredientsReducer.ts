@@ -6,14 +6,15 @@ import {
   DECREMENT_INGREDIENT_COUNT,
   RESET_INGREDIENT_COUNTS,
 } from '../actions/ingredientsActions';
+import { IngredientsState, IngredientsAction } from '../../utils/types';
 
-const initialState = {
+const initialState: IngredientsState = {
   items: [],
   isLoading: false,
   error: null,
 };
 
-const ingredientsReducer = (state = initialState, action) => {
+const ingredientsReducer = (state: IngredientsState = initialState, action: IngredientsAction): IngredientsState => {
   switch (action.type) {
     case FETCH_INGREDIENTS_REQUEST:
       return {
@@ -72,4 +73,3 @@ const ingredientsReducer = (state = initialState, action) => {
 
 export default ingredientsReducer;
 export { initialState as ingredientsInitialState };
-

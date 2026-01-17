@@ -5,13 +5,14 @@ import {
   MOVE_INGREDIENT_IN_CONSTRUCTOR,
   RESET_CONSTRUCTOR,
 } from '../actions/burgerConstructorActions';
+import { BurgerConstructorState, BurgerConstructorAction } from '../../utils/types';
 
-const initialState = {
+const initialState: BurgerConstructorState = {
   bun: null,
   fillings: [],
 };
 
-const burgerConstructorReducer = (state = initialState, action) => {
+const burgerConstructorReducer = (state: BurgerConstructorState = initialState, action: BurgerConstructorAction): BurgerConstructorState => {
   switch (action.type) {
     case SET_CONSTRUCTOR_BUN:
       return {
@@ -53,4 +54,3 @@ const burgerConstructorReducer = (state = initialState, action) => {
 
 export default burgerConstructorReducer;
 export { initialState as burgerConstructorInitialState };
-

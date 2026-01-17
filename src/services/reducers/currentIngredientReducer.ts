@@ -2,12 +2,13 @@ import {
   SET_CURRENT_INGREDIENT,
   CLEAR_CURRENT_INGREDIENT,
 } from '../actions/currentIngredientActions';
+import { CurrentIngredientState, CurrentIngredientAction } from '../../utils/types';
 
-const initialState = {
+const initialState: CurrentIngredientState = {
   item: null,
 };
 
-const currentIngredientReducer = (state = initialState, action) => {
+const currentIngredientReducer = (state: CurrentIngredientState = initialState, action: CurrentIngredientAction): CurrentIngredientState => {
   switch (action.type) {
     case SET_CURRENT_INGREDIENT:
       return {
@@ -23,4 +24,3 @@ const currentIngredientReducer = (state = initialState, action) => {
 
 export default currentIngredientReducer;
 export { initialState as currentIngredientInitialState };
-

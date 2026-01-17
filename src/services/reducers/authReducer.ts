@@ -19,8 +19,9 @@ import {
   UPDATE_USER_FAILURE,
   INIT_AUTH,
 } from '../actions/authActions';
+import { AuthState, AuthAction } from '../../utils/types';
 
-const initialState = {
+const initialState: AuthState = {
   user: null,
   accessToken: null,
   refreshToken: null,
@@ -29,7 +30,7 @@ const initialState = {
   isAuthenticated: false,
 };
 
-const authReducer = (state = initialState, action) => {
+const authReducer = (state: AuthState = initialState, action: AuthAction): AuthState => {
   switch (action.type) {
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
@@ -105,4 +106,3 @@ const authReducer = (state = initialState, action) => {
 };
 
 export default authReducer;
-
