@@ -22,12 +22,12 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoading, error } = useSelector((state: any) => state.ingredients);
-  const bun = useSelector((state: any) => state.burgerConstructor.bun as Ingredient | null);
-  const fillings = useSelector((state: any) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
-  const order = useSelector((state: any) => state.order.order as Order | null);
-  const isOrderLoading = useSelector((state: any) => state.order.isLoading as boolean);
-  const { isAuthenticated, user } = useSelector((state: any) => state.auth);
+  const { isLoading, error } = useSelector((state) => state.ingredients);
+  const bun = useSelector((state) => state.burgerConstructor.bun as Ingredient | null);
+  const fillings = useSelector((state) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
+  const order = useSelector((state) => state.order.order as Order | null);
+  const isOrderLoading = useSelector((state) => state.order.isLoading as boolean);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleOrderClick = () => {
     if (!bun) {

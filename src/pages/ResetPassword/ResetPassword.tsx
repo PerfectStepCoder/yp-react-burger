@@ -11,7 +11,7 @@ const ResetPassword: React.FC = () => {
   const location = useLocation();
   const [password, setPassword] = React.useState<string>('');
   const [token, setToken] = React.useState<string>('');
-  const { isLoading, error, message } = useSelector((state: any) => state.password);
+  const { isLoading, error, message } = useSelector((state) => state.password);
 
   React.useEffect(() => {
     dispatch(resetPasswordReset());

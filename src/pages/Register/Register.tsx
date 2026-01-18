@@ -12,7 +12,7 @@ const Register: React.FC = () => {
   const [name, setName] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
-  const { isLoading, error } = useSelector((state: any) => state.auth);
+  const { isLoading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

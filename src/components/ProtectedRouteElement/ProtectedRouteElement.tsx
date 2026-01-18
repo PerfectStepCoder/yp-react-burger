@@ -8,7 +8,7 @@ interface ProtectedRouteElementProps {
 }
 
 const ProtectedRouteElement: React.FC<ProtectedRouteElementProps> = ({ children, onlyUnauth = false }) => {
-  const { isAuthenticated, user } = useSelector((state: any) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const location = useLocation();
 
   // Если маршрут только для неавторизованных (login, register, forgot-password)

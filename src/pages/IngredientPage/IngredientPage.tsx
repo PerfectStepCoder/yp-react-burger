@@ -8,7 +8,7 @@ import { Ingredient } from '../../utils/types';
 const IngredientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const ingredients = useSelector((state: any) => state.ingredients.items as Ingredient[]);
+  const ingredients = useSelector((state) => state.ingredients.items as Ingredient[]);
   const ingredient = ingredients.find((item) => item._id === id);
 
   if (!ingredient) {

@@ -14,7 +14,7 @@ const TABS = [
 type TabValue = typeof TABS[number]['value'];
 
 const BurgerIngredients: React.FC = () => {
-  const ingredients = useSelector((state: any) => state.ingredients.items as IngredientType[]);
+  const ingredients = useSelector((state) => state.ingredients.items as IngredientType[]);
   const [activeTab, setActiveTab] = useState<TabValue>(TABS[0].value);
   const containerRef = useRef<HTMLDivElement>(null);
   const bunsRef = useRef<HTMLDivElement>(null);
