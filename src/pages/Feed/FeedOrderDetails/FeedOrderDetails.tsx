@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from '../../../hooks/useRedux';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './FeedOrderDetails.module.css';
 import { FeedOrder, Ingredient } from '../../../utils/types';
+import { request } from '../../../utils/request';
 
 // Функция для получения названия бургера из ингредиентов
 const getBurgerName = (order: FeedOrder, ingredients: Ingredient[]): string => {
@@ -43,10 +44,77 @@ const FeedOrderDetails: React.FC = () => {
   const feedOrders = useSelector((state) => state.feed.orders as FeedOrder[]);
 
   const orderNumber = id ? parseInt(id, 10) : null;
-  // Сначала пытаемся найти заказ в WebSocket данных, если нет - используем mock данные
-  const order = orderNumber
+  const [order, setOrder] = useState<FeedOrder | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasFetched, setHasFetched] = useState(false);
+
+  // Сначала пытаемся найти заказ в WebSocket данных
+  const orderFromState = orderNumber
     ? feedOrders.find((o) => o.number === orderNumber)
     : null;
+
+  // Если заказ найден в state, используем его
+  useEffect(() => {
+    if (orderFromState) {
+      setOrder(orderFromState);
+      setError(null);
+      setHasFetched(true);
+    }
+  }, [orderFromState]);
+
+  // Если заказ не найден в state и это прямой переход (нет background), загружаем с сервера
+  useEffect(() => {
+    if (!orderFromState && !background && orderNumber && !loading && !hasFetched) {
+      setLoading(true);
+      setError(null);
+      setHasFetched(true);
+
+      request<{ success: boolean; orders?: FeedOrder[]; order?: FeedOrder }>(`/orders/${orderNumber}`)
+        .then((response) => {
+          // API возвращает напрямую {success: true, orders: [...]}
+          // response.data может быть undefined, проверяем сам response
+          if (response.success) {
+            // Проверяем разные форматы ответа API
+            let foundOrder: FeedOrder | undefined;
+            
+            // Формат 1: { success: true, order: {...} }
+            if ('order' in response && response.order) {
+              foundOrder = response.order as FeedOrder;
+            }
+            // Формат 2: { success: true, orders: [...] } - основной формат по API
+            else if ('orders' in response && Array.isArray(response.orders)) {
+              foundOrder = response.orders.find((o) => o.number === orderNumber);
+            }
+            // Формат 3: данные в response.data
+            else if (response.data) {
+              const responseData = response.data as { success: boolean; orders?: FeedOrder[]; order?: FeedOrder };
+              if (responseData.order) {
+                foundOrder = responseData.order as FeedOrder;
+              } else if (responseData.orders && Array.isArray(responseData.orders)) {
+                foundOrder = responseData.orders.find((o) => o.number === orderNumber);
+              }
+            }
+            
+            if (foundOrder && foundOrder.number === orderNumber) {
+              setOrder(foundOrder);
+            } else {
+              setError('Заказ не найден');
+            }
+          } else {
+            setError('Заказ не найден');
+          }
+        })
+        .catch((err) => {
+          console.error('Ошибка загрузки заказа:', err);
+          setError('Ошибка загрузки заказа');
+          setHasFetched(false); // Разрешаем повторную попытку при ошибке
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [orderFromState, background, orderNumber, hasFetched]);
 
   const ingredientsWithCount = useMemo(() => {
     if (!order?.ingredients || !ingredients.length) return [];
@@ -74,17 +142,31 @@ const FeedOrderDetails: React.FC = () => {
     }, 0);
   }, [ingredientsWithCount]);
 
+  // Если это модальное окно и заказ не найден
+  if (background && !order) {
+    return null;
+  }
+
+  // Если прямой переход и заказ не найден
   if (!order) {
     return (
       <main className={`${styles.main} pt-10 pb-10`}>
         <div className={styles.container}>
-          <h1 className="text text_type_main-large mb-6">Заказ не найден</h1>
-          <button
-            onClick={() => navigate(-1)}
-            className="text text_type_main-default text_color_accent"
-          >
-            Вернуться назад
-          </button>
+          {loading ? (
+            <p className="text text_type_main-large">Загрузка заказа...</p>
+          ) : (
+            <>
+              <h1 className="text text_type_main-large mb-6">
+                {error || 'Заказ не найден'}
+              </h1>
+              <button
+                onClick={() => navigate(-1)}
+                className="text text_type_main-default text_color_accent"
+              >
+                Вернуться назад
+              </button>
+            </>
+          )}
         </div>
       </main>
     );
