@@ -8,6 +8,7 @@ export const WS_FEED_GET_MESSAGE = 'WS_FEED_GET_MESSAGE';
 
 export interface WsFeedConnectionStartAction {
   type: typeof WS_FEED_CONNECTION_START;
+  payload?: string; // URL WebSocket соединения
 }
 
 export interface WsFeedConnectionSuccessAction {
@@ -35,8 +36,9 @@ export type FeedAction =
   | WsFeedConnectionClosedAction
   | WsFeedGetMessageAction;
 
-export const wsFeedConnectionStart = (): WsFeedConnectionStartAction => ({
+export const wsFeedConnectionStart = (url?: string): WsFeedConnectionStartAction => ({
   type: WS_FEED_CONNECTION_START,
+  payload: url,
 });
 
 export const wsFeedConnectionSuccess = (): WsFeedConnectionSuccessAction => ({

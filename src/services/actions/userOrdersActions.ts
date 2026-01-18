@@ -8,7 +8,7 @@ export const WS_USER_ORDERS_GET_MESSAGE = 'WS_USER_ORDERS_GET_MESSAGE';
 
 export interface WsUserOrdersConnectionStartAction {
   type: typeof WS_USER_ORDERS_CONNECTION_START;
-  payload?: string; // accessToken
+  payload?: string; // URL WebSocket соединения (уже с токеном)
 }
 
 export interface WsUserOrdersConnectionSuccessAction {
@@ -36,9 +36,9 @@ export type UserOrdersAction =
   | WsUserOrdersConnectionClosedAction
   | WsUserOrdersGetMessageAction;
 
-export const wsUserOrdersConnectionStart = (accessToken?: string): WsUserOrdersConnectionStartAction => ({
+export const wsUserOrdersConnectionStart = (url?: string): WsUserOrdersConnectionStartAction => ({
   type: WS_USER_ORDERS_CONNECTION_START,
-  payload: accessToken,
+  payload: url,
 });
 
 export const wsUserOrdersConnectionSuccess = (): WsUserOrdersConnectionSuccessAction => ({

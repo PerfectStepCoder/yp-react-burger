@@ -1,182 +1,117 @@
 import { Middleware } from 'redux';
-import {
-  WS_FEED_CONNECTION_START,
-  WS_FEED_CONNECTION_SUCCESS,
-  WS_FEED_CONNECTION_ERROR,
-  WS_FEED_CONNECTION_CLOSED,
-  WS_FEED_GET_MESSAGE,
-  wsFeedConnectionSuccess,
-  wsFeedConnectionError,
-  wsFeedConnectionClosed,
-  wsFeedGetMessage,
-} from '../actions/feedActions';
-import {
-  WS_USER_ORDERS_CONNECTION_START,
-  WS_USER_ORDERS_CONNECTION_SUCCESS,
-  WS_USER_ORDERS_CONNECTION_ERROR,
-  WS_USER_ORDERS_CONNECTION_CLOSED,
-  WS_USER_ORDERS_GET_MESSAGE,
-  wsUserOrdersConnectionSuccess,
-  wsUserOrdersConnectionError,
-  wsUserOrdersConnectionClosed,
-  wsUserOrdersGetMessage,
-} from '../actions/userOrdersActions';
 import { RootState, RootAction } from '../../utils/types';
-import { getAccessToken } from '../actions/authActions';
 
-export const socketMiddleware = (): Middleware<{}, RootState> => {
+// Интерфейс для конфигурации WebSocket соединения
+export interface WsConfig {
+  wsInit: string;        // Тип экшена для инициализации соединения
+  onOpen: string;        // Тип экшена при открытии соединения
+  onError: string;       // Тип экшена при ошибке
+  onClose: string;       // Тип экшена при закрытии соединения
+  onMessage: string;     // Тип экшена при получении сообщения
+}
+
+// Интерфейс для payload при старте соединения
+export interface WsConnectionStartPayload {
+  url: string;           // Полный URL WebSocket соединения (уже с токеном, если нужно)
+}
+
+/**
+ * Универсальный WebSocket middleware
+ */
+export const socketMiddleware = (wsConfig: WsConfig): Middleware<{}, RootState> => {
   return (store) => {
-    let feedSocket: WebSocket | null = null;
-    let userOrdersSocket: WebSocket | null = null;
+    let socket: WebSocket | null = null;
 
     return (next) => (action: unknown) => {
-      const { dispatch, getState } = store;
+      const { dispatch } = store;
       const wsAction = action as { type: string; payload?: any };
       const { type, payload } = wsAction;
 
-      // Обработка WebSocket для ленты заказов (всех пользователей)
-      if (type === WS_FEED_CONNECTION_START) {
+      // Инициализация соединения
+      if (type === wsConfig.wsInit) {
         // Закрываем существующее соединение, если оно есть
-        if (feedSocket) {
-          feedSocket.onopen = null;
-          feedSocket.onerror = null;
-          feedSocket.onclose = null;
-          feedSocket.onmessage = null;
+        if (socket) {
+          socket.onopen = null;
+          socket.onerror = null;
+          socket.onclose = null;
+          socket.onmessage = null;
           try {
-            feedSocket.close();
+            socket.close();
           } catch {
             // Игнорируем ошибки при закрытии
           }
-          feedSocket = null;
+          socket = null;
         }
 
-        const wsBaseUrl = process.env.REACT_APP_WS_BASE_URL || 'wss://norma.education-services.ru';
-        const wsUrl = `${wsBaseUrl}/orders/all`;
+        // Получаем URL из payload
+        const connectionPayload = payload as WsConnectionStartPayload | string;
+        const wsUrl = typeof connectionPayload === 'string' 
+          ? connectionPayload 
+          : connectionPayload?.url;
 
-        feedSocket = new WebSocket(wsUrl);
-
-        feedSocket.onopen = () => {
-          dispatch(wsFeedConnectionSuccess() as any);
-        };
-
-        feedSocket.onerror = () => {
-          dispatch(wsFeedConnectionError('Ошибка WebSocket соединения') as any);
-        };
-
-        feedSocket.onclose = () => {
-          dispatch(wsFeedConnectionClosed() as any);
-        };
-
-        feedSocket.onmessage = (event) => {
-          const { data } = event;
-          const parsedData = JSON.parse(data);
-
-          if (parsedData.success) {
-            dispatch(wsFeedGetMessage(parsedData) as any);
-          }
-        };
-      }
-
-      if (feedSocket && type === WS_FEED_CONNECTION_CLOSED) {
-        feedSocket.onopen = null;
-        feedSocket.onerror = null;
-        feedSocket.onclose = null;
-        feedSocket.onmessage = null;
-
-        try {
-          feedSocket.close();
-        } catch {
-          // Игнорируем ошибки при закрытии
-        }
-        feedSocket = null;
-      }
-
-      // Обработка WebSocket для персональных заказов (с авторизацией)
-      if (type === WS_USER_ORDERS_CONNECTION_START) {
-        // Закрываем существующее соединение, если оно есть
-        if (userOrdersSocket) {
-          userOrdersSocket.onopen = null;
-          userOrdersSocket.onerror = null;
-          userOrdersSocket.onclose = null;
-          userOrdersSocket.onmessage = null;
-          try {
-            userOrdersSocket.close();
-          } catch {
-            // Игнорируем ошибки при закрытии
-          }
-          userOrdersSocket = null;
-        }
-
-        // Получаем токен из payload или из state/cookies
-        let accessToken = payload;
-        if (!accessToken) {
-          const state = getState();
-          accessToken = state.auth.accessToken;
-        }
-        if (!accessToken) {
-          // Пытаемся получить из cookies
-          accessToken = getAccessToken();
-        }
-
-        if (!accessToken) {
-          dispatch(wsUserOrdersConnectionError('Токен не найден') as any);
+        if (!wsUrl) {
+          dispatch({
+            type: wsConfig.onError,
+            payload: 'URL WebSocket соединения не указан',
+          } as any);
           return next(action);
         }
 
-        // Убираем префикс "Bearer " если он есть (для WebSocket нужен только токен)
-        const cleanToken = accessToken.replace(/^Bearer\s+/i, '');
+        // Создаем новое соединение
+        socket = new WebSocket(wsUrl);
 
-        const wsBaseUrl = process.env.REACT_APP_WS_BASE_URL || 'wss://norma.education-services.ru';
-        const wsUrl = `${wsBaseUrl}/orders?token=${cleanToken}`;
-        
-        console.log('[WebSocket] Подключение к персональным заказам:', wsUrl.replace(cleanToken, '***'));
-        
-        userOrdersSocket = new WebSocket(wsUrl);
-
-        userOrdersSocket.onopen = () => {
-          //console.log('[WebSocket] Соединение с персональными заказами установлено');
-          dispatch(wsUserOrdersConnectionSuccess() as any);
+        socket.onopen = () => {
+          dispatch({
+            type: wsConfig.onOpen,
+          } as any);
         };
 
-        userOrdersSocket.onerror = (error) => {
-          //console.error('[WebSocket] Ошибка соединения с персональными заказами:', error);
-          dispatch(wsUserOrdersConnectionError('Ошибка WebSocket соединения') as any);
+        socket.onerror = () => {
+          dispatch({
+            type: wsConfig.onError,
+            payload: 'Ошибка WebSocket соединения',
+          } as any);
         };
 
-        userOrdersSocket.onclose = (event) => {
-          //console.log('[WebSocket] Соединение с персональными заказами закрыто:', event.code, event.reason);
-          dispatch(wsUserOrdersConnectionClosed() as any);
+        socket.onclose = () => {
+          dispatch({
+            type: wsConfig.onClose,
+          } as any);
         };
 
-        userOrdersSocket.onmessage = (event) => {
+        socket.onmessage = (event) => {
           const { data } = event;
           try {
             const parsedData = JSON.parse(data);
-            //console.log('[WebSocket] Получено сообщение от персональных заказов:', parsedData);
-
-            if (parsedData.success) {
-              dispatch(wsUserOrdersGetMessage(parsedData) as any);
-            } else {
-              console.warn('[WebSocket] Сообщение без success:', parsedData);
-            }
+            
+            // Диспатчим сообщение, если есть поле success или просто передаем данные как есть
+            dispatch({
+              type: wsConfig.onMessage,
+              payload: parsedData,
+            } as any);
           } catch (error) {
             console.error('[WebSocket] Ошибка парсинга сообщения:', error, data);
+            dispatch({
+              type: wsConfig.onError,
+              payload: 'Ошибка парсинга сообщения WebSocket',
+            } as any);
           }
         };
       }
 
-      if (userOrdersSocket && type === WS_USER_ORDERS_CONNECTION_CLOSED) {
-        userOrdersSocket.onopen = null;
-        userOrdersSocket.onerror = null;
-        userOrdersSocket.onclose = null;
-        userOrdersSocket.onmessage = null;
+      // Закрытие соединения
+      if (socket && type === wsConfig.onClose) {
+        socket.onopen = null;
+        socket.onerror = null;
+        socket.onclose = null;
+        socket.onmessage = null;
 
         try {
-          userOrdersSocket.close();
+          socket.close();
         } catch {
           // Игнорируем ошибки при закрытии
         }
-        userOrdersSocket = null;
+        socket = null;
       }
 
       return next(action);

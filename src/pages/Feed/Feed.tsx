@@ -14,7 +14,9 @@ const Feed: React.FC = () => {
 
   // Подключаемся к WebSocket при монтировании компонента
   useEffect(() => {
-    dispatch(wsFeedConnectionStart());
+    const wsBaseUrl = process.env.REACT_APP_WS_BASE_URL || 'wss://norma.education-services.ru';
+    const wsUrl = `${wsBaseUrl}/orders/all`;
+    dispatch(wsFeedConnectionStart(wsUrl));
 
     // Отключаемся от WebSocket при размонтировании
     return () => {

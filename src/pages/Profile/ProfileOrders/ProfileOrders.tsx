@@ -16,7 +16,11 @@ const ProfileOrders: React.FC = () => {
   // Подключаемся к WebSocket при монтировании компонента
   useEffect(() => {
     if (accessToken) {
-      dispatch(wsUserOrdersConnectionStart(accessToken));
+      // Убираем префикс "Bearer " если он есть (для WebSocket нужен только токен)
+      const cleanToken = accessToken.replace(/^Bearer\s+/i, '');
+      const wsBaseUrl = process.env.REACT_APP_WS_BASE_URL || 'wss://norma.education-services.ru';
+      const wsUrl = `${wsBaseUrl}/orders?token=${cleanToken}`;
+      dispatch(wsUserOrdersConnectionStart(wsUrl));
     }
 
     // Отключаемся от WebSocket при размонтировании
