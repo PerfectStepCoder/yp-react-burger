@@ -7,14 +7,23 @@
 
 .container {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
 }
 
-.content {
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.leftColumn {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
 }
 
 .ordersList {
@@ -23,6 +32,7 @@
   gap: 16px;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+  padding-right: 8px;
 }
 
 .orderCard {
@@ -51,28 +61,17 @@
   color: var(--text-primary-color);
 }
 
-.statusDone {
-  color: var(--colors-interface-success);
-}
-
-.statusPending {
-  color: var(--colors-interface-accent);
-}
-
-.statusCreated {
-  color: var(--text-primary-color);
-}
-
 .orderFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 24px;
 }
 
 .ingredientsPreview {
   display: flex;
   align-items: center;
-  gap: -8px;
+  position: relative;
 }
 
 .ingredientIcon {
@@ -82,14 +81,96 @@
   background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
   border: 2px solid var(--background-element);
   margin-left: -16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .ingredientIcon:first-child {
   margin-left: 0;
 }
 
+.ingredientIcon::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--background);
+  z-index: 1;
+}
+
+.ingredientImage {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
 .price {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.statsSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.ordersGridsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ordersGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 272px;
+}
+
+.readyOrderLink {
+  color: var(--colors-interface-success);
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.readyOrderLink:hover {
+  opacity: 0.7;
+}
+
+.glowNumber {
+  color: var(--colors-interface-accent);
+  text-shadow: 0 0 16px rgba(51, 51, 255, 0.25), 0 0 8px rgba(51, 51, 255, 0.25), 0 4px 32px rgba(51, 51, 255, 0.5);
+}
+
+@media (max-width: 1024px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 }

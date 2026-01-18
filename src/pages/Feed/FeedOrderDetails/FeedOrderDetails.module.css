@@ -51,13 +51,51 @@
   gap: 16px;
 }
 
+.ingredientIconWrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
 .ingredientIcon {
   width: 64px;
   height: 64px;
   border-radius: 50%;
   background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
   border: 2px solid var(--background-element);
-  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ingredientIcon::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--background);
+  z-index: 1;
+}
+
+.ingredientImage {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.ingredientName {
+  flex: 1;
+  color: var(--text-primary-color);
+}
+
+.ingredientPrice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .footer {

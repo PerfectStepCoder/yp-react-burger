@@ -51,6 +51,21 @@ const FeedOrderModal: React.FC = () => {
   );
 };
 
+// Компонент для модального окна с деталями заказа в истории пользователя
+const ProfileOrderModal: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Modal title="" onClose={handleClose}>
+      <ProfileOrderDetails />
+    </Modal>
+  );
+};
+
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -69,7 +84,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/feed" element={<Feed />} />
         {!background && <Route path="/ingredients/:id" element={<IngredientPage />} />}
-        {!background && <Route path="/feed/:id" element={<FeedOrderDetails />} />}
+        <Route
+          path="/feed/:id"
+          element={
+            !background ? (
+              <FeedOrderDetails />
+            ) : null
+          }
+        />
         <Route
           path="/login"
           element={
@@ -112,14 +134,16 @@ function App() {
         >
           <Route path="orders" element={<ProfileOrders />} />
         </Route>
-        <Route
-          path="/profile/orders/:id"
-          element={
-            <ProtectedRouteElement>
-              <ProfileOrderDetails />
-            </ProtectedRouteElement>
-          }
-        />
+        {!background && (
+          <Route
+            path="/profile/orders/:id"
+            element={
+              <ProtectedRouteElement>
+                <ProfileOrderDetails />
+              </ProtectedRouteElement>
+            }
+          />
+        )}
         <Route path="*" element={<NotFound />} />
       </Routes>
       {/* Второй Routes - только для модальных окон (попапов), показываются только при наличии background */}
@@ -135,6 +159,14 @@ function App() {
             path="/feed/:id"
             element={
               <FeedOrderModal />
+            }
+          />
+          <Route
+            path="/profile/orders/:id"
+            element={
+              <ProtectedRouteElement>
+                <ProfileOrderModal />
+              </ProtectedRouteElement>
             }
           />
         </Routes>

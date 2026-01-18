@@ -27,12 +27,29 @@ export interface ApiResponse<T> {
 }
 
 export interface Order {
+  _id?: string;
   number: number;
   name?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
   ingredients?: string[];
+}
+
+export interface FeedOrder {
+  _id: string;
+  number: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  ingredients: string[];
+}
+
+export interface FeedResponse {
+  success: boolean;
+  orders: FeedOrder[];
+  total: number;
+  totalToday: number;
 }
 
 export interface User {
@@ -81,6 +98,22 @@ export interface PasswordState {
   message: string | null;
 }
 
+export interface FeedState {
+  orders: FeedOrder[];
+  total: number;
+  totalToday: number;
+  wsConnected: boolean;
+  error?: string;
+}
+
+export interface UserOrdersState {
+  orders: FeedOrder[];
+  total: number;
+  totalToday: number;
+  wsConnected: boolean;
+  error?: string;
+}
+
 export interface RootState {
   ingredients: IngredientsState;
   burgerConstructor: BurgerConstructorState;
@@ -88,6 +121,8 @@ export interface RootState {
   order: OrderState;
   password: PasswordState;
   auth: AuthState;
+  feed: FeedState;
+  userOrders: UserOrdersState;
 }
 
 // Auth Actions
@@ -356,6 +391,47 @@ export type PasswordAction =
   | ResetPasswordFailureAction
   | ResetPasswordResetAction;
 
+// Feed Actions (WebSocket)
+export type FeedAction =
+  | {
+      type: 'WS_FEED_CONNECTION_START';
+    }
+  | {
+      type: 'WS_FEED_CONNECTION_SUCCESS';
+    }
+  | {
+      type: 'WS_FEED_CONNECTION_ERROR';
+      payload: string;
+    }
+  | {
+      type: 'WS_FEED_CONNECTION_CLOSED';
+    }
+  | {
+      type: 'WS_FEED_GET_MESSAGE';
+      payload: FeedResponse;
+    };
+
+// User Orders Actions (WebSocket с авторизацией)
+export type UserOrdersAction =
+  | {
+      type: 'WS_USER_ORDERS_CONNECTION_START';
+      payload?: string;
+    }
+  | {
+      type: 'WS_USER_ORDERS_CONNECTION_SUCCESS';
+    }
+  | {
+      type: 'WS_USER_ORDERS_CONNECTION_ERROR';
+      payload: string;
+    }
+  | {
+      type: 'WS_USER_ORDERS_CONNECTION_CLOSED';
+    }
+  | {
+      type: 'WS_USER_ORDERS_GET_MESSAGE';
+      payload: FeedResponse;
+    };
+
 // Combined Action type
 export type RootAction =
   | AuthAction
@@ -363,4 +439,6 @@ export type RootAction =
   | CurrentIngredientAction
   | IngredientsAction
   | OrderAction
-  | PasswordAction;
+  | PasswordAction
+  | FeedAction
+  | UserOrdersAction;
