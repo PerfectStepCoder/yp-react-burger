@@ -13,6 +13,8 @@ import ProfileOrders from './pages/Profile/ProfileOrders/ProfileOrders';
 import ProfileOrderDetails from './pages/Profile/ProfileOrderDetails/ProfileOrderDetails';
 import IngredientPage from './pages/IngredientPage/IngredientPage';
 import NotFound from './pages/NotFound/NotFound';
+import Feed from './pages/Feed/Feed';
+import FeedOrderDetails from './pages/Feed/FeedOrderDetails/FeedOrderDetails';
 import Modal from './components/Modal/Modal';
 import IngredientDetails from './components/IngredientDetails/IngredientDetails';
 import { initAuth } from './services/actions/authActions';
@@ -34,6 +36,36 @@ const IngredientModal: React.FC = () => {
   );
 };
 
+// Компонент для модального окна с деталями заказа в ленте
+const FeedOrderModal: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Modal title="" onClose={handleClose}>
+      <FeedOrderDetails />
+    </Modal>
+  );
+};
+
+// Компонент для модального окна с деталями заказа в истории пользователя
+const ProfileOrderModal: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Modal title="" onClose={handleClose}>
+      <ProfileOrderDetails />
+    </Modal>
+  );
+};
+
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -50,7 +82,16 @@ function App() {
       {/* Первый Routes - только для страниц (без модальных окон) */}
       <Routes location={background || location}>
         <Route path="/" element={<Home />} />
+        <Route path="/feed" element={<Feed />} />
         {!background && <Route path="/ingredients/:id" element={<IngredientPage />} />}
+        <Route
+          path="/feed/:id"
+          element={
+            !background ? (
+              <FeedOrderDetails />
+            ) : null
+          }
+        />
         <Route
           path="/login"
           element={
@@ -93,14 +134,16 @@ function App() {
         >
           <Route path="orders" element={<ProfileOrders />} />
         </Route>
-        <Route
-          path="/profile/orders/:id"
-          element={
-            <ProtectedRouteElement>
-              <ProfileOrderDetails />
-            </ProtectedRouteElement>
-          }
-        />
+        {!background && (
+          <Route
+            path="/profile/orders/:id"
+            element={
+              <ProtectedRouteElement>
+                <ProfileOrderDetails />
+              </ProtectedRouteElement>
+            }
+          />
+        )}
         <Route path="*" element={<NotFound />} />
       </Routes>
       {/* Второй Routes - только для модальных окон (попапов), показываются только при наличии background */}
@@ -110,6 +153,20 @@ function App() {
             path="/ingredients/:id"
             element={
               <IngredientModal />
+            }
+          />
+          <Route
+            path="/feed/:id"
+            element={
+              <FeedOrderModal />
+            }
+          />
+          <Route
+            path="/profile/orders/:id"
+            element={
+              <ProtectedRouteElement>
+                <ProfileOrderModal />
+              </ProtectedRouteElement>
             }
           />
         </Routes>

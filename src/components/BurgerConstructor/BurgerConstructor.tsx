@@ -26,8 +26,8 @@ interface BurgerConstructorProps {
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) => {
   const dispatch = useDispatch();
-  const bun = useSelector((state: any) => state.burgerConstructor.bun as Ingredient | null);
-  const fillings = useSelector((state: any) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
+  const bun = useSelector((state) => state.burgerConstructor.bun as Ingredient | null);
+  const fillings = useSelector((state) => state.burgerConstructor.fillings as Array<Ingredient & { uuid: string }>);
 
   const totalPrice = useMemo(() => {
     const bunTotal = bun ? bun.price * 2 : 0;

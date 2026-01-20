@@ -9,7 +9,7 @@ const ForgotPassword: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = React.useState<string>('');
-  const { isLoading, error, message } = useSelector((state: any) => state.password);
+  const { isLoading, error, message } = useSelector((state) => state.password);
 
   React.useEffect(() => {
     dispatch(resetPasswordReset());

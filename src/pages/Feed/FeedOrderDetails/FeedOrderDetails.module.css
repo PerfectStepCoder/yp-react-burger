@@ -21,15 +21,11 @@
 }
 
 .statusDone {
-  color: var(--text-primary-color);
-}
-
-.statusPending {
   color: var(--colors-interface-success);
 }
 
-.statusCanceled {
-  color: var(--colors-interface-error);
+.statusPending {
+  color: var(--colors-interface-accent);
 }
 
 .statusCreated {

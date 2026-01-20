@@ -2,17 +2,11 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from '../../../hooks/useRedux';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import styles from './ProfileOrderDetails.module.css';
+import styles from './FeedOrderDetails.module.css';
 import { FeedOrder, Ingredient } from '../../../utils/types';
 import { request } from '../../../utils/request';
-import { getAccessToken, getAuthHeaders } from '../../../services/actions/authActions';
 
-interface IngredientWithCount {
-  ingredient: Ingredient;
-  count: number;
-}
-
-// Function to get burger name from ingredients
+// Функция для получения названия бургера из ингредиентов
 const getBurgerName = (order: FeedOrder, ingredients: Ingredient[]): string => {
   if (!order.ingredients || order.ingredients.length === 0 || !ingredients.length) {
     return 'Бургер без названия';
@@ -23,26 +17,31 @@ const getBurgerName = (order: FeedOrder, ingredients: Ingredient[]): string => {
     .map((id) => ingredients.find((ing) => ing._id === id))
     .filter((ing) => ing !== undefined) as Ingredient[];
 
-  const hasBun = orderIngredients.some((ing) => ing.type === 'bun');
   const hasMain = orderIngredients.some((ing) => ing.type === 'main');
   const hasSauce = orderIngredients.some((ing) => ing.type === 'sauce');
 
-  if (hasBun && (hasMain || hasSauce)) {
-    const bunName = orderIngredients.find((ing) => ing.type === 'bun')?.name;
-    const mainOrSauceName = orderIngredients.find((ing) => ing.type === 'main' || ing.type === 'sauce')?.name;
-    return `${bunName || 'Булка'} с ${mainOrSauceName || 'начинкой'}`;
+  if (hasMain && hasSauce) {
+    return `${orderIngredients.find((ing) => ing.type === 'main')?.name || 'Бургер'} соусом`;
   }
+  if (hasMain) {
+    return `${orderIngredients.find((ing) => ing.type === 'main')?.name || 'Бургер'}`;
+  }
+
   return 'Космический бургер';
 };
 
-const ProfileOrderDetails: React.FC = () => {
+interface IngredientWithCount {
+  ingredient: Ingredient;
+  count: number;
+}
+
+const FeedOrderDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const background = (location.state as any)?.background;
   const ingredients = useSelector((state) => state.ingredients.items as Ingredient[]);
-  const userOrders = useSelector((state) => state.userOrders.orders);
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const feedOrders = useSelector((state) => state.feed.orders as FeedOrder[]);
 
   const orderNumber = id ? parseInt(id, 10) : null;
   const [order, setOrder] = useState<FeedOrder | null>(null);
@@ -51,7 +50,9 @@ const ProfileOrderDetails: React.FC = () => {
   const [hasFetched, setHasFetched] = useState(false);
 
   // Сначала пытаемся найти заказ в WebSocket данных
-  const orderFromState = orderNumber ? userOrders.find((o) => o.number === orderNumber) : null;
+  const orderFromState = orderNumber
+    ? feedOrders.find((o) => o.number === orderNumber)
+    : null;
 
   // Если заказ найден в state, используем его
   useEffect(() => {
@@ -65,26 +66,11 @@ const ProfileOrderDetails: React.FC = () => {
   // Если заказ не найден в state и это прямой переход (нет background), загружаем с сервера
   useEffect(() => {
     if (!orderFromState && !background && orderNumber && !loading && !hasFetched) {
-      // Получаем токен из state или cookies
-      let token = accessToken;
-      if (!token) {
-        token = getAccessToken();
-      }
-
-      if (!token) {
-        setError('Необходима авторизация');
-        setLoading(false);
-        return;
-      }
-
       setLoading(true);
       setError(null);
       setHasFetched(true);
 
-      request<{ success: boolean; orders?: FeedOrder[]; order?: FeedOrder }>(`/orders/${orderNumber}`, {
-        method: 'GET',
-        headers: getAuthHeaders(token),
-      })
+      request<{ success: boolean; orders?: FeedOrder[]; order?: FeedOrder }>(`/orders/${orderNumber}`)
         .then((response) => {
           // API возвращает напрямую {success: true, orders: [...]}
           // response.data может быть undefined, проверяем сам response
@@ -128,7 +114,7 @@ const ProfileOrderDetails: React.FC = () => {
           setLoading(false);
         });
     }
-  }, [orderFromState, background, orderNumber, hasFetched, accessToken]);
+  }, [orderFromState, background, orderNumber, hasFetched]);
 
   const ingredientsWithCount = useMemo(() => {
     if (!order?.ingredients || !ingredients.length) return [];
@@ -163,36 +149,27 @@ const ProfileOrderDetails: React.FC = () => {
 
   // Если прямой переход и заказ не найден
   if (!order) {
-    const content = (
-      <div className={styles.container}>
-        {loading ? (
-          <p className="text text_type_main-large">Загрузка заказа...</p>
-        ) : (
-          <>
-            <h1 className="text text_type_main-large mb-6">
-              {error || 'Заказ не найден'}
-            </h1>
-            <button
-              onClick={() => navigate(-1)}
-              className="text text_type_main-default text_color_accent"
-            >
-              Вернуться назад
-            </button>
-          </>
-        )}
-      </div>
+    return (
+      <main className={`${styles.main} pt-10 pb-10`}>
+        <div className={styles.container}>
+          {loading ? (
+            <p className="text text_type_main-large">Загрузка заказа...</p>
+          ) : (
+            <>
+              <h1 className="text text_type_main-large mb-6">
+                {error || 'Заказ не найден'}
+              </h1>
+              <button
+                onClick={() => navigate(-1)}
+                className="text text_type_main-default text_color_accent"
+              >
+                Вернуться назад
+              </button>
+            </>
+          )}
+        </div>
+      </main>
     );
-
-    // Если прямой переход (нет background), оборачиваем в main
-    if (!background) {
-      return (
-        <main className={`${styles.main} pt-10 pb-10`}>
-          {content}
-        </main>
-      );
-    }
-
-    return content;
   }
 
   const formatDate = (dateString: string): string => {
@@ -224,8 +201,6 @@ const ProfileOrderDetails: React.FC = () => {
         return 'Готовится';
       case 'created':
         return 'Создан';
-      case 'canceled':
-        return 'Отменен';
       default:
         return 'Неизвестно';
     }
@@ -237,8 +212,6 @@ const ProfileOrderDetails: React.FC = () => {
         return styles.statusDone;
       case 'pending':
         return styles.statusPending;
-      case 'canceled':
-        return styles.statusCanceled;
       case 'created':
         return styles.statusCreated;
       default:
@@ -250,11 +223,11 @@ const ProfileOrderDetails: React.FC = () => {
   const content = (
     <div className={styles.container}>
       <div className={styles.orderNumber}>
-              <span className="text text_type_digits-default">#{String(order.number).padStart(6, '0')}</span>
-            </div>
-            <h1 className={`text text_type_main-medium mb-3 ${styles.orderName}`}>
-              {getBurgerName(order, ingredients)}
-            </h1>
+        <span className="text text_type_digits-default">#{String(order.number).padStart(6, '0')}</span>
+      </div>
+      <h1 className={`text text_type_main-medium mb-3 ${styles.orderName}`}>
+        {getBurgerName(order, ingredients)}
+      </h1>
       {order.status && (
         <p className={`text text_type_main-default mb-15 ${getStatusClass(order.status)}`}>
           {getStatusText(order.status)}
@@ -304,8 +277,12 @@ const ProfileOrderDetails: React.FC = () => {
     return content;
   }
 
-  // Обычная страница (возвращаем только контент, т.к. он уже обернут в контейнер)
-  return content;
+  // Обычная страница (возвращаем контент с оберткой main)
+  return (
+    <main className={`${styles.main} pt-10 pb-10`}>
+      {content}
+    </main>
+  );
 };
 
-export default ProfileOrderDetails;
+export default FeedOrderDetails;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from '../../hooks/useRedux';
 import { logout } from '../../services/actions/authActions';
 import ProfileSettings from './ProfileSettings/ProfileSettings';
@@ -9,6 +9,8 @@ import styles from './Profile.module.css';
 const Profile: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isOrdersPage = location.pathname.includes('/orders');
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -47,6 +49,11 @@ const Profile: React.FC = () => {
           >
             Выход
           </button>
+          {isOrdersPage && (
+            <p className={`text text_type_main-default text_color_inactive mt-20 ${styles.description}`}>
+              В этом разделе вы можете просмотреть свою историю заказов
+            </p>
+          )}
         </nav>
         <div className={styles.main}>
           <Routes>

@@ -4,14 +4,15 @@ import {
   CREATE_ORDER_FAILURE,
   RESET_ORDER,
 } from '../actions/orderActions';
+import { OrderState, OrderAction } from '../../utils/types';
 
-const initialState = {
+const initialState: OrderState = {
   order: null,
   isLoading: false,
   error: null,
 };
 
-const orderReducer = (state = initialState, action) => {
+const orderReducer = (state: OrderState = initialState, action: OrderAction): OrderState => {
   switch (action.type) {
     case CREATE_ORDER_REQUEST:
       return {
@@ -40,4 +41,3 @@ const orderReducer = (state = initialState, action) => {
 
 export default orderReducer;
 export { initialState as orderInitialState };
-

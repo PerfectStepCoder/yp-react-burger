@@ -4,14 +4,15 @@ import {
   RESET_PASSWORD_FAILURE,
   RESET_PASSWORD_RESET,
 } from '../actions/passwordActions';
+import { PasswordState, PasswordAction } from '../../utils/types';
 
-const initialState = {
+const initialState: PasswordState = {
   isLoading: false,
   error: null,
   message: null,
 };
 
-const passwordReducer = (state = initialState, action) => {
+const passwordReducer = (state: PasswordState = initialState, action: PasswordAction): PasswordState => {
   switch (action.type) {
     case RESET_PASSWORD_REQUEST:
       return {
@@ -42,9 +43,3 @@ const passwordReducer = (state = initialState, action) => {
 
 export default passwordReducer;
 export { initialState as passwordInitialState };
-
-
-
-
-
-

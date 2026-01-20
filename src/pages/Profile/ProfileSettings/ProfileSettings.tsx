@@ -7,7 +7,7 @@ import { User } from '../../../utils/types';
 
 const ProfileSettings: React.FC = () => {
   const dispatch = useDispatch();
-  const { user, isLoading, error } = useSelector((state: any) => state.auth);
+  const { user, isLoading, error } = useSelector((state) => state.auth);
   const [name, setName] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
