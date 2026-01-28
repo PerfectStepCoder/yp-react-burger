@@ -39,7 +39,7 @@ describe('ingredientsReducer', () => {
   describe('initial state', () => {
     it('should return the initial state', () => {
       expect(
-        ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' })
+        ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)
       ).toEqual({
         items: [],
         isLoading: false,
@@ -50,7 +50,7 @@ describe('ingredientsReducer', () => {
 
   describe('FETCH_INGREDIENTS_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: FETCH_INGREDIENTS_REQUEST };
+      const action = { type: FETCH_INGREDIENTS_REQUEST } as any;
       const state = ingredientsReducer(ingredientsInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -60,8 +60,8 @@ describe('ingredientsReducer', () => {
       const currentState = {
         ...ingredientsInitialState,
         error: 'Previous error',
-      };
-      const action = { type: FETCH_INGREDIENTS_REQUEST };
+      } as any;
+      const action = { type: FETCH_INGREDIENTS_REQUEST } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -74,7 +74,7 @@ describe('ingredientsReducer', () => {
       const action = {
         type: FETCH_INGREDIENTS_SUCCESS,
         payload: ingredients,
-      };
+      } as any;
       const state = ingredientsReducer(
         { ...ingredientsInitialState, isLoading: true },
         action
@@ -90,12 +90,12 @@ describe('ingredientsReducer', () => {
         items: [mockIngredient1],
         isLoading: true,
         error: null,
-      };
+      } as any;
       const newIngredients = [mockIngredient2];
       const action = {
         type: FETCH_INGREDIENTS_SUCCESS,
         payload: newIngredients,
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items).toHaveLength(1);
       expect(state.items[0]).toEqual({ ...mockIngredient2, count: 0 });
@@ -108,7 +108,7 @@ describe('ingredientsReducer', () => {
       const action = {
         type: FETCH_INGREDIENTS_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = ingredientsReducer(
         { ...ingredientsInitialState, isLoading: true },
         action
@@ -127,11 +127,11 @@ describe('ingredientsReducer', () => {
         ],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: INCREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 1 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(1);
       expect(state.items[1].count).toBe(0);
@@ -142,11 +142,11 @@ describe('ingredientsReducer', () => {
         items: [{ ...mockIngredient1, count: 2 }],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: INCREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 3 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(5);
     });
@@ -156,11 +156,11 @@ describe('ingredientsReducer', () => {
         items: [{ ...mockIngredient1 }], // count is undefined
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: INCREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 2 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(2);
     });
@@ -173,11 +173,11 @@ describe('ingredientsReducer', () => {
         ],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: INCREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 1 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(2);
       expect(state.items[1].count).toBe(2);
@@ -193,11 +193,11 @@ describe('ingredientsReducer', () => {
         ],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: DECREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 1 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(4);
       expect(state.items[1].count).toBe(3);
@@ -208,11 +208,11 @@ describe('ingredientsReducer', () => {
         items: [{ ...mockIngredient1, count: 5 }],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: DECREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 2 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(3);
     });
@@ -222,11 +222,11 @@ describe('ingredientsReducer', () => {
         items: [{ ...mockIngredient1, count: 1 }],
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: DECREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 5 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(0);
     });
@@ -236,11 +236,11 @@ describe('ingredientsReducer', () => {
         items: [{ ...mockIngredient1 }], // count is undefined
         isLoading: false,
         error: null,
-      };
+      } as any;
       const action = {
         type: DECREMENT_INGREDIENT_COUNT,
         payload: { id: 'ingredient-1', amount: 1 },
-      };
+      } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(0);
     });
@@ -255,8 +255,8 @@ describe('ingredientsReducer', () => {
         ],
         isLoading: false,
         error: null,
-      };
-      const action = { type: RESET_INGREDIENT_COUNTS };
+      } as any;
+      const action = { type: RESET_INGREDIENT_COUNTS } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(0);
       expect(state.items[1].count).toBe(0);
@@ -270,8 +270,8 @@ describe('ingredientsReducer', () => {
         ],
         isLoading: false,
         error: null,
-      };
-      const action = { type: RESET_INGREDIENT_COUNTS };
+      } as any;
+      const action = { type: RESET_INGREDIENT_COUNTS } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state.items[0].count).toBe(0);
       expect(state.items[1].count).toBe(0);
@@ -284,8 +284,8 @@ describe('ingredientsReducer', () => {
         items: [mockIngredient1],
         isLoading: false,
         error: null,
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = ingredientsReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

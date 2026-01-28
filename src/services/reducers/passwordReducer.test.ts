@@ -10,7 +10,7 @@ describe('passwordReducer', () => {
   describe('initial state', () => {
     it('should return the initial state', () => {
       expect(
-        passwordReducer(undefined, { type: 'UNKNOWN_ACTION' })
+        passwordReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)
       ).toEqual({
         isLoading: false,
         error: null,
@@ -21,7 +21,7 @@ describe('passwordReducer', () => {
 
   describe('RESET_PASSWORD_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: RESET_PASSWORD_REQUEST };
+      const action = { type: RESET_PASSWORD_REQUEST } as any;
       const state = passwordReducer(passwordInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -32,8 +32,8 @@ describe('passwordReducer', () => {
         isLoading: false,
         error: 'Previous error',
         message: null,
-      };
-      const action = { type: RESET_PASSWORD_REQUEST };
+      } as any;
+      const action = { type: RESET_PASSWORD_REQUEST } as any;
       const state = passwordReducer(currentState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -46,7 +46,7 @@ describe('passwordReducer', () => {
       const action = {
         type: RESET_PASSWORD_SUCCESS,
         payload: successMessage,
-      };
+      } as any;
       const state = passwordReducer(
         { ...passwordInitialState, isLoading: true },
         action
@@ -61,12 +61,12 @@ describe('passwordReducer', () => {
         isLoading: true,
         error: null,
         message: 'Old message',
-      };
+      } as any;
       const newMessage = 'New message';
       const action = {
         type: RESET_PASSWORD_SUCCESS,
         payload: newMessage,
-      };
+      } as any;
       const state = passwordReducer(currentState, action);
       expect(state.message).toBe(newMessage);
     });
@@ -78,7 +78,7 @@ describe('passwordReducer', () => {
       const action = {
         type: RESET_PASSWORD_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = passwordReducer(
         {
           ...passwordInitialState,
@@ -97,12 +97,12 @@ describe('passwordReducer', () => {
         isLoading: true,
         error: null,
         message: 'Success message',
-      };
+      } as any;
       const errorMessage = 'Error occurred';
       const action = {
         type: RESET_PASSWORD_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = passwordReducer(currentState, action);
       expect(state.message).toBe(null);
       expect(state.error).toBe(errorMessage);
@@ -115,14 +115,14 @@ describe('passwordReducer', () => {
         isLoading: true,
         error: 'Some error',
         message: 'Some message',
-      };
-      const action = { type: RESET_PASSWORD_RESET };
+      } as any;
+      const action = { type: RESET_PASSWORD_RESET } as any;
       const state = passwordReducer(currentState, action);
       expect(state).toEqual(passwordInitialState);
     });
 
     it('should reset even if already in initial state', () => {
-      const action = { type: RESET_PASSWORD_RESET };
+      const action = { type: RESET_PASSWORD_RESET } as any;
       const state = passwordReducer(passwordInitialState, action);
       expect(state).toEqual(passwordInitialState);
     });
@@ -134,8 +134,8 @@ describe('passwordReducer', () => {
         isLoading: false,
         error: null,
         message: 'Some message',
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = passwordReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

@@ -46,7 +46,7 @@ describe('burgerConstructorReducer', () => {
   describe('initial state', () => {
     it('should return the initial state', () => {
       expect(
-        burgerConstructorReducer(undefined, { type: 'UNKNOWN_ACTION' })
+        burgerConstructorReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)
       ).toEqual({
         bun: null,
         fillings: [],
@@ -59,7 +59,7 @@ describe('burgerConstructorReducer', () => {
       const action = {
         type: SET_CONSTRUCTOR_BUN,
         payload: mockBun,
-      };
+      } as any;
       const state = burgerConstructorReducer(
         burgerConstructorInitialState,
         action
@@ -73,15 +73,15 @@ describe('burgerConstructorReducer', () => {
         ...mockBun,
         _id: 'bun-2',
         name: 'Новая булка',
-      };
+      } as any;
       const action = {
         type: SET_CONSTRUCTOR_BUN,
         payload: newBun,
-      };
+      } as any;
       const currentState = {
         bun: mockBun,
         fillings: [],
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.bun).toEqual(newBun);
     });
@@ -92,7 +92,7 @@ describe('burgerConstructorReducer', () => {
       const action = {
         type: ADD_INGREDIENT_TO_CONSTRUCTOR,
         payload: mockConstructorIngredient,
-      };
+      } as any;
       const state = burgerConstructorReducer(
         burgerConstructorInitialState,
         action
@@ -106,15 +106,15 @@ describe('burgerConstructorReducer', () => {
         ...mockIngredient,
         _id: 'ingredient-2',
         uuid: 'uuid-2',
-      };
+      } as any;
       const action1 = {
         type: ADD_INGREDIENT_TO_CONSTRUCTOR,
         payload: mockConstructorIngredient,
-      };
+      } as any;
       const action2 = {
         type: ADD_INGREDIENT_TO_CONSTRUCTOR,
         payload: secondIngredient,
-      };
+      } as any;
       let state = burgerConstructorReducer(
         burgerConstructorInitialState,
         action1
@@ -131,11 +131,11 @@ describe('burgerConstructorReducer', () => {
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient],
-      };
+      } as any;
       const action = {
         type: REMOVE_INGREDIENT_FROM_CONSTRUCTOR,
         payload: 'uuid-1',
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.fillings).toHaveLength(0);
     });
@@ -144,11 +144,11 @@ describe('burgerConstructorReducer', () => {
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient],
-      };
+      } as any;
       const action = {
         type: REMOVE_INGREDIENT_FROM_CONSTRUCTOR,
         payload: 'non-existent-uuid',
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.fillings).toHaveLength(1);
       expect(state.fillings[0]).toEqual(mockConstructorIngredient);
@@ -159,7 +159,7 @@ describe('burgerConstructorReducer', () => {
         ...mockIngredient,
         _id: 'ingredient-2',
         uuid: 'uuid-2',
-      };
+      } as any;
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient, secondIngredient],
@@ -167,7 +167,7 @@ describe('burgerConstructorReducer', () => {
       const action = {
         type: REMOVE_INGREDIENT_FROM_CONSTRUCTOR,
         payload: 'uuid-1',
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.fillings).toHaveLength(1);
       expect(state.fillings[0]).toEqual(secondIngredient);
@@ -180,7 +180,7 @@ describe('burgerConstructorReducer', () => {
         ...mockIngredient,
         _id: 'ingredient-1',
         uuid: 'uuid-1',
-      };
+      } as any;
       const ingredient2: ConstructorIngredient = {
         ...mockIngredient,
         _id: 'ingredient-2',
@@ -198,7 +198,7 @@ describe('burgerConstructorReducer', () => {
       const action = {
         type: MOVE_INGREDIENT_IN_CONSTRUCTOR,
         payload: { fromIndex: 0, toIndex: 2 },
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.fillings[0]).toEqual(ingredient2);
       expect(state.fillings[1]).toEqual(ingredient3);
@@ -209,11 +209,11 @@ describe('burgerConstructorReducer', () => {
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient],
-      };
+      } as any;
       const action = {
         type: MOVE_INGREDIENT_IN_CONSTRUCTOR,
         payload: { fromIndex: 10, toIndex: 0 },
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state).toEqual(currentState);
     });
@@ -223,7 +223,7 @@ describe('burgerConstructorReducer', () => {
         ...mockIngredient,
         _id: 'ingredient-1',
         uuid: 'uuid-1',
-      };
+      } as any;
       const ingredient2: ConstructorIngredient = {
         ...mockIngredient,
         _id: 'ingredient-2',
@@ -236,7 +236,7 @@ describe('burgerConstructorReducer', () => {
       const action = {
         type: MOVE_INGREDIENT_IN_CONSTRUCTOR,
         payload: { fromIndex: 0, toIndex: 1 },
-      };
+      } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state.fillings[0]).toEqual(ingredient2);
       expect(state.fillings[1]).toEqual(ingredient1);
@@ -248,8 +248,8 @@ describe('burgerConstructorReducer', () => {
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient],
-      };
-      const action = { type: RESET_CONSTRUCTOR };
+      } as any;
+      const action = { type: RESET_CONSTRUCTOR } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state).toEqual(burgerConstructorInitialState);
     });
@@ -260,8 +260,8 @@ describe('burgerConstructorReducer', () => {
       const currentState = {
         bun: mockBun,
         fillings: [mockConstructorIngredient],
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = burgerConstructorReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

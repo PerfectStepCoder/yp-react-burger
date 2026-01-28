@@ -7,7 +7,7 @@ const initialState = {
   isLoading: false,
   error: null,
   isAuthenticated: false,
-};
+} as any;
 import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -35,16 +35,16 @@ describe('authReducer', () => {
   const mockUser: User = {
     email: 'test@example.com',
     name: 'Test User',
-  };
+  } as any;
 
   const mockTokens = {
     accessToken: 'access-token-123',
     refreshToken: 'refresh-token-456',
-  };
+  } as any;
 
   describe('initial state', () => {
     it('should return the initial state', () => {
-      expect(authReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual({
+      expect(authReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)).toEqual({
         user: null,
         accessToken: null,
         refreshToken: null,
@@ -57,7 +57,7 @@ describe('authReducer', () => {
 
   describe('REGISTER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: REGISTER_REQUEST };
+      const action = { type: REGISTER_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -72,7 +72,7 @@ describe('authReducer', () => {
           user: mockUser,
           ...mockTokens,
         },
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -92,7 +92,7 @@ describe('authReducer', () => {
       const action = {
         type: REGISTER_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -105,7 +105,7 @@ describe('authReducer', () => {
 
   describe('LOGIN_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: LOGIN_REQUEST };
+      const action = { type: LOGIN_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -120,7 +120,7 @@ describe('authReducer', () => {
           user: mockUser,
           ...mockTokens,
         },
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -140,7 +140,7 @@ describe('authReducer', () => {
       const action = {
         type: LOGIN_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -153,7 +153,7 @@ describe('authReducer', () => {
 
   describe('LOGOUT_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: LOGOUT_REQUEST };
+      const action = { type: LOGOUT_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -162,7 +162,7 @@ describe('authReducer', () => {
 
   describe('LOGOUT_SUCCESS', () => {
     it('should reset state to initial state', () => {
-      const action = { type: LOGOUT_SUCCESS };
+      const action = { type: LOGOUT_SUCCESS } as any;
       const currentState = {
         user: mockUser,
         accessToken: mockTokens.accessToken,
@@ -170,7 +170,7 @@ describe('authReducer', () => {
         isLoading: false,
         error: null,
         isAuthenticated: true,
-      };
+      } as any;
       const state = authReducer(currentState, action);
       expect(state).toEqual(initialState);
     });
@@ -182,7 +182,7 @@ describe('authReducer', () => {
       const action = {
         type: LOGOUT_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -195,7 +195,7 @@ describe('authReducer', () => {
 
   describe('UPDATE_TOKEN_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: UPDATE_TOKEN_REQUEST };
+      const action = { type: UPDATE_TOKEN_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -207,11 +207,11 @@ describe('authReducer', () => {
       const newTokens = {
         accessToken: 'new-access-token',
         refreshToken: 'new-refresh-token',
-      };
+      } as any;
       const action = {
         type: UPDATE_TOKEN_SUCCESS,
         payload: newTokens,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -229,7 +229,7 @@ describe('authReducer', () => {
       const action = {
         type: UPDATE_TOKEN_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -242,7 +242,7 @@ describe('authReducer', () => {
 
   describe('GET_USER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: GET_USER_REQUEST };
+      const action = { type: GET_USER_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -254,7 +254,7 @@ describe('authReducer', () => {
       const action = {
         type: GET_USER_SUCCESS,
         payload: mockUser,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -272,7 +272,7 @@ describe('authReducer', () => {
       const action = {
         type: GET_USER_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -285,7 +285,7 @@ describe('authReducer', () => {
 
   describe('UPDATE_USER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: UPDATE_USER_REQUEST };
+      const action = { type: UPDATE_USER_REQUEST } as any;
       const state = authReducer(initialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -297,11 +297,11 @@ describe('authReducer', () => {
       const updatedUser: User = {
         email: 'updated@example.com',
         name: 'Updated User',
-      };
+      } as any;
       const action = {
         type: UPDATE_USER_SUCCESS,
         payload: updatedUser,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -319,7 +319,7 @@ describe('authReducer', () => {
       const action = {
         type: UPDATE_USER_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = authReducer(
         { ...initialState, isLoading: true },
         action
@@ -335,12 +335,12 @@ describe('authReducer', () => {
       const action = {
         type: INIT_AUTH,
         payload: mockTokens,
-      };
+      } as any;
       const currentState = {
         ...initialState,
         user: mockUser,
         isAuthenticated: true,
-      };
+      } as any;
       const state = authReducer(currentState, action);
       expect(state.accessToken).toBe(mockTokens.accessToken);
       expect(state.refreshToken).toBe(mockTokens.refreshToken);
@@ -358,8 +358,8 @@ describe('authReducer', () => {
         isLoading: false,
         error: null,
         isAuthenticated: true,
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = authReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

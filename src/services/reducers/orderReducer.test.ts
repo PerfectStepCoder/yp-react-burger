@@ -20,7 +20,7 @@ describe('orderReducer', () => {
 
   describe('initial state', () => {
     it('should return the initial state', () => {
-      expect(orderReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual({
+      expect(orderReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)).toEqual({
         order: null,
         isLoading: false,
         error: null,
@@ -30,7 +30,7 @@ describe('orderReducer', () => {
 
   describe('CREATE_ORDER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
-      const action = { type: CREATE_ORDER_REQUEST };
+      const action = { type: CREATE_ORDER_REQUEST } as any;
       const state = orderReducer(orderInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -41,8 +41,8 @@ describe('orderReducer', () => {
         order: null,
         isLoading: false,
         error: 'Previous error',
-      };
-      const action = { type: CREATE_ORDER_REQUEST };
+      } as any;
+      const action = { type: CREATE_ORDER_REQUEST } as any;
       const state = orderReducer(currentState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
@@ -54,7 +54,7 @@ describe('orderReducer', () => {
       const action = {
         type: CREATE_ORDER_SUCCESS,
         payload: mockOrder,
-      };
+      } as any;
       const state = orderReducer(
         { ...orderInitialState, isLoading: true },
         action
@@ -68,7 +68,7 @@ describe('orderReducer', () => {
       const existingOrder: Order = {
         ...mockOrder,
         number: 11111,
-      };
+      } as any;
       const newOrder: Order = {
         ...mockOrder,
         number: 22222,
@@ -81,7 +81,7 @@ describe('orderReducer', () => {
       const action = {
         type: CREATE_ORDER_SUCCESS,
         payload: newOrder,
-      };
+      } as any;
       const state = orderReducer(currentState, action);
       expect(state.order).toEqual(newOrder);
       expect(state.order?.number).toBe(22222);
@@ -94,7 +94,7 @@ describe('orderReducer', () => {
       const action = {
         type: CREATE_ORDER_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = orderReducer(
         { ...orderInitialState, isLoading: true },
         action
@@ -108,12 +108,12 @@ describe('orderReducer', () => {
         order: mockOrder,
         isLoading: true,
         error: null,
-      };
+      } as any;
       const errorMessage = 'Failed to create order';
       const action = {
         type: CREATE_ORDER_FAILURE,
         payload: errorMessage,
-      };
+      } as any;
       const state = orderReducer(currentState, action);
       expect(state.order).toEqual(mockOrder);
       expect(state.error).toBe(errorMessage);
@@ -126,14 +126,14 @@ describe('orderReducer', () => {
         order: mockOrder,
         isLoading: false,
         error: 'Some error',
-      };
-      const action = { type: RESET_ORDER };
+      } as any;
+      const action = { type: RESET_ORDER } as any;
       const state = orderReducer(currentState, action);
       expect(state).toEqual(orderInitialState);
     });
 
     it('should reset even if already in initial state', () => {
-      const action = { type: RESET_ORDER };
+      const action = { type: RESET_ORDER } as any;
       const state = orderReducer(orderInitialState, action);
       expect(state).toEqual(orderInitialState);
     });
@@ -145,8 +145,8 @@ describe('orderReducer', () => {
         order: mockOrder,
         isLoading: false,
         error: null,
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = orderReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

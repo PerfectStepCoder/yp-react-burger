@@ -23,7 +23,7 @@ describe('currentIngredientReducer', () => {
   describe('initial state', () => {
     it('should return the initial state', () => {
       expect(
-        currentIngredientReducer(undefined, { type: 'UNKNOWN_ACTION' })
+        currentIngredientReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)
       ).toEqual({
         item: null,
       });
@@ -35,7 +35,7 @@ describe('currentIngredientReducer', () => {
       const action = {
         type: SET_CURRENT_INGREDIENT,
         payload: mockIngredient,
-      };
+      } as any;
       const state = currentIngredientReducer(
         currentIngredientInitialState,
         action
@@ -48,14 +48,14 @@ describe('currentIngredientReducer', () => {
         ...mockIngredient,
         _id: 'ingredient-2',
         name: 'Новый соус',
-      };
+      } as any;
       const action = {
         type: SET_CURRENT_INGREDIENT,
         payload: newIngredient,
-      };
+      } as any;
       const currentState = {
         item: mockIngredient,
-      };
+      } as any;
       const state = currentIngredientReducer(currentState, action);
       expect(state.item).toEqual(newIngredient);
     });
@@ -66,13 +66,13 @@ describe('currentIngredientReducer', () => {
       const currentState = {
         item: mockIngredient,
       };
-      const action = { type: CLEAR_CURRENT_INGREDIENT };
+      const action = { type: CLEAR_CURRENT_INGREDIENT } as any;
       const state = currentIngredientReducer(currentState, action);
       expect(state).toEqual(currentIngredientInitialState);
     });
 
     it('should reset to initial state even if already null', () => {
-      const action = { type: CLEAR_CURRENT_INGREDIENT };
+      const action = { type: CLEAR_CURRENT_INGREDIENT } as any;
       const state = currentIngredientReducer(
         currentIngredientInitialState,
         action
@@ -85,8 +85,8 @@ describe('currentIngredientReducer', () => {
     it('should return current state for unknown action', () => {
       const currentState = {
         item: mockIngredient,
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = currentIngredientReducer(currentState, action);
       expect(state).toEqual(currentState);
     });

@@ -35,7 +35,7 @@ describe('feedReducer', () => {
 
   describe('initial state', () => {
     it('should return the initial state', () => {
-      expect(feedReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
+      expect(feedReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)).toEqual(
         initialState
       );
     });
@@ -47,7 +47,7 @@ describe('feedReducer', () => {
         ...initialState,
         error: 'Previous error',
       };
-      const action = { type: WS_FEED_CONNECTION_START };
+      const action = { type: WS_FEED_CONNECTION_START } as any;
       const state = feedReducer(currentState, action);
       expect(state.error).toBeUndefined();
       expect(state.wsConnected).toBe(false);
@@ -56,7 +56,7 @@ describe('feedReducer', () => {
 
   describe('WS_FEED_CONNECTION_SUCCESS', () => {
     it('should set wsConnected to true and clear error', () => {
-      const action = { type: WS_FEED_CONNECTION_SUCCESS };
+      const action = { type: WS_FEED_CONNECTION_SUCCESS } as any;
       const state = feedReducer(initialState, action);
       expect(state.wsConnected).toBe(true);
       expect(state.error).toBeUndefined();
@@ -66,8 +66,8 @@ describe('feedReducer', () => {
       const currentState = {
         ...initialState,
         error: 'Connection error',
-      };
-      const action = { type: WS_FEED_CONNECTION_SUCCESS };
+      } as any;
+      const action = { type: WS_FEED_CONNECTION_SUCCESS } as any;
       const state = feedReducer(currentState, action);
       expect(state.wsConnected).toBe(true);
       expect(state.error).toBeUndefined();
@@ -80,11 +80,11 @@ describe('feedReducer', () => {
       const action = {
         type: WS_FEED_CONNECTION_ERROR,
         payload: errorMessage,
-      };
+      } as any;
       const currentState = {
         ...initialState,
         wsConnected: true,
-      };
+      } as any;
       const state = feedReducer(currentState, action);
       expect(state.error).toBe(errorMessage);
       expect(state.wsConnected).toBe(false);
@@ -98,7 +98,7 @@ describe('feedReducer', () => {
         wsConnected: true,
         error: 'Some error',
       };
-      const action = { type: WS_FEED_CONNECTION_CLOSED };
+      const action = { type: WS_FEED_CONNECTION_CLOSED } as any;
       const state = feedReducer(currentState, action);
       expect(state.wsConnected).toBe(false);
       expect(state.error).toBeUndefined();
@@ -110,7 +110,7 @@ describe('feedReducer', () => {
       const action = {
         type: WS_FEED_GET_MESSAGE,
         payload: mockFeedResponse,
-      };
+      } as any;
       const state = feedReducer(initialState, action);
       expect(state.orders).toEqual(mockFeedResponse.orders);
       expect(state.total).toBe(mockFeedResponse.total);
@@ -124,11 +124,11 @@ describe('feedReducer', () => {
         orders: [],
         total: 0,
         totalToday: 0,
-      };
+      } as any;
       const action = {
         type: WS_FEED_GET_MESSAGE,
         payload: emptyResponse,
-      };
+      } as any;
       const state = feedReducer(initialState, action);
       expect(state.orders).toEqual([]);
       expect(state.total).toBe(0);
@@ -141,11 +141,11 @@ describe('feedReducer', () => {
         orders: undefined,
         total: undefined,
         totalToday: undefined,
-      };
+      } as any;
       const action = {
         type: WS_FEED_GET_MESSAGE,
         payload: partialResponse as FeedResponse,
-      };
+      } as any;
       const state = feedReducer(initialState, action);
       expect(state.orders).toEqual([]);
       expect(state.total).toBe(0);
@@ -158,7 +158,7 @@ describe('feedReducer', () => {
         orders: [mockOrder],
         total: 50,
         totalToday: 5,
-      };
+      } as any;
       const newOrder: FeedOrder = {
         ...mockOrder,
         _id: 'order-2',
@@ -173,7 +173,7 @@ describe('feedReducer', () => {
       const action = {
         type: WS_FEED_GET_MESSAGE,
         payload: newResponse,
-      };
+      } as any;
       const state = feedReducer(currentState, action);
       expect(state.orders).toEqual([newOrder]);
       expect(state.orders).not.toContain(mockOrder);
@@ -188,8 +188,8 @@ describe('feedReducer', () => {
         ...initialState,
         orders: [mockOrder],
         wsConnected: true,
-      };
-      const action = { type: 'UNKNOWN_ACTION' };
+      } as any;
+      const action = { type: 'UNKNOWN_ACTION' } as any;
       const state = feedReducer(currentState, action);
       expect(state).toEqual(currentState);
     });
