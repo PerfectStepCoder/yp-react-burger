@@ -3,6 +3,8 @@
 Базовый АПИ:
 https://norma.education-services.ru/api/ingredients
 
+Адрес сайта опубликованного в www:
+https://misfloresdedesano.ru.nomorepartiessbs.ru/
 
 ### Запуск всех тестов
 
@@ -55,7 +57,3 @@ npx cypress run --browser chrome
 - Перед запуском тестов убедитесь, что приложение запущено на `http://localhost:3000`
 - Тесты используют моки API, поэтому не требуют реального сервера
 - Для тестирования drag and drop используется симуляция событий браузера
-
-Адрес сайта опубликованного в www:
-
-
