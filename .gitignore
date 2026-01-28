@@ -16,3 +16,12 @@ node_modules/
 test.txt
 
 build/
+
+coverage/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+# Cypress
+cypress/videos/
+cypress/screenshots/

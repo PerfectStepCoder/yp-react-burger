@@ -136,7 +136,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) =
       </div>
 
       <div className={styles.summary}>
-        <div className={`${styles.total} mr-10`}>
+        <div className={`${styles.total} mr-10`} data-testid="order-total">
           <span className="text text_type_digits-medium mr-2">
             {totalPrice}
           </span>
