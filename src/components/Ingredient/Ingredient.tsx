@@ -40,6 +40,7 @@ const Ingredient: React.FC<IngredientProps> = ({ ingredient }) => {
     >
       <article
         ref={dragRef as any}
+        data-testid="ingredient-card"
         className={`${styles.card} pt-6 pb-6 pl-6 pr-6`}
         style={{
           cursor: 'pointer',

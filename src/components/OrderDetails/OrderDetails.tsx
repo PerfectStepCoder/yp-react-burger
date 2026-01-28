@@ -9,7 +9,7 @@ interface OrderDetailsProps {
 const OrderDetails: React.FC<OrderDetailsProps> = ({ orderNumber }) => {
   return (
     <div className={styles.content}>
-      <div className={styles.orderNumber}>
+      <div className={styles.orderNumber} data-testid="order-number">
         <span className="text text_type_digits-large">
           {orderNumber ?? '—'}
         </span>
