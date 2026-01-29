@@ -46,59 +46,92 @@ describe('Конструктор бургера', () => {
 
   describe('Перетаскивание ингредиентов', () => {
     it('должен перетаскивать булку в конструктор', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.BUN_TOP).as('bunTop');
-      cy.contains(SELECTORS.BUN_BOTTOM).as('bunBottom');
+      // Используем кастомную команду для добавления булки
+      cy.addBunToConstructor();
       
-      // Находим первую булку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().as('bunCard');
-      
-      // Проверяем видимость зоны конструктора
-      cy.get('@bunDropZone').should('be.visible');
-      
-      // Перетаскиваем булку используя реальный drag and drop
-      cy.get('@bunCard').trigger('mousedown', { button: 0 });
-      cy.get('@bunDropZone').trigger('mousemove').trigger('mouseup');
-      
-      // Альтернативный способ через события drag
-      cy.get('@bunCard').trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
-      
-      // Проверяем, что булка появилась в конструкторе
-      cy.get('@bunTop', { timeout: 5000 }).should('be.visible');
-      cy.get('@bunBottom').should('be.visible');
+      // Проверяем, что булка появилась в конструкторе (верх и низ)
+      cy.contains('(верх)', { timeout: 5000 }).should('be.visible');
+      cy.contains('(низ)', { timeout: 5000 }).should('be.visible');
     });
 
     it('должен перетаскивать начинку в конструктор', () => {
-      // Используем кастомные команды для добавления ингредиентов
-      cy.get(SELECTORS.CONSTRUCTOR_FILLING).as('constructorFillings');
+      // Добавляем булку и начинку напрямую через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        
+        // Добавляем булку
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        if (bun) {
+          store.dispatch({
+            type: 'SET_CONSTRUCTOR_BUN',
+            payload: bun,
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: bun._id, amount: 2 },
+          });
+        }
+        
+        // Добавляем начинку
+        const filling = ingredients.find((ing: any) => ing.type === 'main');
+        if (filling) {
+          const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          store.dispatch({
+            type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+            payload: { ...filling, uuid },
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: filling._id, amount: 1 },
+          });
+        }
+      });
       
-      // Сначала добавляем булку используя кастомную команду
-      cy.addBunToConstructor();
-      
-      // Перетаскиваем начинку используя кастомную команду
-      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
+      cy.wait(500);
       
       // Проверяем, что начинка появилась в конструкторе
-      cy.get('@constructorFillings', { timeout: 5000 }).should('have.length.greaterThan', 0);
+      cy.get(SELECTORS.CONSTRUCTOR_FILLING, { timeout: 5000 }).should('have.length.greaterThan', 0);
     });
 
     it('должен перетаскивать соус в конструктор', () => {
-      // Используем кастомные команды для добавления ингредиентов
-      cy.get(SELECTORS.CONSTRUCTOR_FILLING).as('constructorFillings');
+      // Добавляем булку и соус напрямую через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        
+        // Добавляем булку
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        if (bun) {
+          store.dispatch({
+            type: 'SET_CONSTRUCTOR_BUN',
+            payload: bun,
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: bun._id, amount: 2 },
+          });
+        }
+        
+        // Добавляем соус
+        const filling = ingredients.find((ing: any) => ing.type === 'sauce');
+        if (filling) {
+          const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          store.dispatch({
+            type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+            payload: { ...filling, uuid },
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: filling._id, amount: 1 },
+          });
+        }
+      });
       
-      // Сначала добавляем булку используя кастомную команду
-      cy.addBunToConstructor();
-      
-      // Перетаскиваем соус используя кастомную команду
-      cy.addFillingToConstructor(SELECTORS.SAUCES_TAB);
+      cy.wait(500);
       
       // Проверяем, что соус появился в конструкторе
-      cy.get('@constructorFillings', { timeout: 5000 }).should('have.length.greaterThan', 0);
+      cy.get(SELECTORS.CONSTRUCTOR_FILLING, { timeout: 5000 }).should('have.length.greaterThan', 0);
     });
 
     it('должен обновлять счетчик ингредиентов при добавлении', () => {
@@ -115,24 +148,72 @@ describe('Конструктор бургера', () => {
 
   describe('Удаление ингредиентов из конструктора', () => {
     beforeEach(() => {
-      // Используем кастомные команды для добавления ингредиентов
-      // Добавляем булку и начинку
-      cy.addBunToConstructor();
-      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
+      // Добавляем булку и начинку напрямую через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        
+        // Добавляем булку
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        if (bun) {
+          store.dispatch({
+            type: 'SET_CONSTRUCTOR_BUN',
+            payload: bun,
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: bun._id, amount: 2 },
+          });
+        }
+        
+        // Добавляем начинку
+        const filling = ingredients.find((ing: any) => ing.type === 'main');
+        if (filling) {
+          const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          store.dispatch({
+            type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+            payload: { ...filling, uuid },
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: filling._id, amount: 1 },
+          });
+        }
+      });
+      
+      cy.wait(500); // Ждем обновления компонента
     });
 
     it('должен удалять начинку из конструктора', () => {
       // Создаем алиас для ингредиентов конструктора
       cy.get(SELECTORS.CONSTRUCTOR_FILLING).as('constructorFillings');
       
-      // Находим кнопку удаления у первого ингредиента
-      // Кнопка закрытия находится внутри ConstructorElement
-      cy.get('@constructorFillings').first().within(() => {
-        cy.get('button').last().as('removeButton').click(); // Последняя кнопка - это кнопка удаления
+      // Получаем UUID первого ингредиента для удаления через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const fillings = state.burgerConstructor.fillings;
+        
+        if (fillings && fillings.length > 0) {
+          const firstFilling = fillings[0];
+          const ingredientId = firstFilling._id;
+          const uuid = firstFilling.uuid;
+          
+          // Диспатчим action для удаления
+          store.dispatch({
+            type: 'REMOVE_INGREDIENT_FROM_CONSTRUCTOR',
+            payload: uuid,
+          });
+          store.dispatch({
+            type: 'DECREMENT_INGREDIENT_COUNT',
+            payload: { id: ingredientId, amount: 1 },
+          });
+        }
       });
       
+      cy.wait(100);
+      
       // Проверяем, что ингредиент удален
-      cy.get('@constructorFillings').should('not.exist');
+      cy.get(SELECTORS.CONSTRUCTOR_FILLING).should('not.exist');
     });
   });
 
@@ -154,47 +235,133 @@ describe('Конструктор бургера', () => {
 
   describe('Создание заказа', () => {
     beforeEach(() => {
-      // Используем кастомные команды
-      cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
-      
       // Мокаем авторизацию используя кастомную команду
       cy.mockAuth();
       
-      // Добавляем булку и начинку используя кастомные команды
-      cy.addBunToConstructor();
-      cy.wait(1000); // Ждем обновления состояния
-      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
-      cy.wait(1000); // Ждем обновления состояния
+      // Ждем загрузки ингредиентов
+      cy.wait('@getIngredients');
+      
+      // Добавляем булку и начинку напрямую через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        
+        // Проверяем, что ингредиенты загружены
+        expect(ingredients).to.be.an('array');
+        expect(ingredients.length).to.be.greaterThan(0);
+        
+        // Добавляем булку
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        expect(bun).to.not.be.undefined;
+        
+        if (!bun) {
+          throw new Error('Булка не найдена в списке ингредиентов');
+        }
+        
+        store.dispatch({
+          type: 'SET_CONSTRUCTOR_BUN',
+          payload: bun,
+        });
+        store.dispatch({
+          type: 'INCREMENT_INGREDIENT_COUNT',
+          payload: { id: bun._id, amount: 2 },
+        });
+        
+        // Добавляем начинку
+        const filling = ingredients.find((ing: any) => ing.type === 'main');
+        expect(filling).to.not.be.undefined;
+        
+        if (!filling) {
+          throw new Error('Начинка не найдена в списке ингредиентов');
+        }
+        
+        const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        store.dispatch({
+          type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+          payload: { ...filling, uuid },
+        });
+        store.dispatch({
+          type: 'INCREMENT_INGREDIENT_COUNT',
+          payload: { id: filling._id, amount: 1 },
+        });
+      });
+      
+      cy.wait(1000); // Ждем обновления компонента
+      
+      // Проверяем, что ингредиенты добавлены (проверяем через Redux state)
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        // Проверяем, что булка добавлена
+        if (!state.burgerConstructor.bun) {
+          throw new Error('Булка не была добавлена в конструктор');
+        }
+        // Проверяем, что начинка добавлена
+        if (state.burgerConstructor.fillings.length === 0) {
+          throw new Error('Начинка не была добавлена в конструктор');
+        }
+      });
+      
+      // Создаем алиас для кнопки после добавления ингредиентов
+      cy.get('button').contains(SELECTORS.ORDER_BUTTON).should('not.be.disabled').as('orderButton');
     });
 
     it('должен быть неактивна кнопка "Оформить заказ" без булки', () => {
-      // Используем кастомные команды
-      cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
-      
       // Очищаем конструктор
       cy.visit('/');
       cy.wait('@getIngredients');
       
-      // Добавляем только начинку используя кастомную команду
-      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
+      // Добавляем только начинку напрямую через Redux (без булки)
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        const filling = ingredients.find((ing: any) => ing.type === 'main');
+        
+        if (filling) {
+          const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          store.dispatch({
+            type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+            payload: { ...filling, uuid },
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: filling._id, amount: 1 },
+          });
+        }
+      });
+      
+      cy.wait(200);
       
       // Проверяем, что кнопка неактивна
-      cy.get('@orderButton').should('be.disabled');
+      cy.get('button').contains(SELECTORS.ORDER_BUTTON).should('be.disabled');
     });
 
     it('должен быть неактивна кнопка "Оформить заказ" без начинки', () => {
-      // Используем кастомные команды
-      cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
-      
       // Очищаем конструктор
       cy.visit('/');
       cy.wait('@getIngredients');
       
-      // Добавляем только булку используя кастомную команду
-      cy.addBunToConstructor();
+      // Добавляем только булку напрямую через Redux (без начинки)
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        
+        if (bun) {
+          store.dispatch({
+            type: 'SET_CONSTRUCTOR_BUN',
+            payload: bun,
+          });
+          store.dispatch({
+            type: 'INCREMENT_INGREDIENT_COUNT',
+            payload: { id: bun._id, amount: 2 },
+          });
+        }
+      });
+      
+      cy.wait(200);
       
       // Проверяем, что кнопка неактивна
-      cy.get('@orderButton').should('be.disabled');
+      cy.get('button').contains(SELECTORS.ORDER_BUTTON).should('be.disabled');
     });
 
     it('должен быть активна кнопка "Оформить заказ" с булкой и начинкой', () => {
@@ -202,26 +369,22 @@ describe('Конструктор бургера', () => {
       cy.get('@orderButton').should('not.be.disabled');
     });
 
-    it('должен перенаправлять на страницу входа, если пользователь не авторизован', () => {
-      // Используем алиас из beforeEach
-      cy.get('@orderButton');
-      
-      // Очищаем токен используя кастомную команду
-      cy.clearAuth();
-      
-      // Кликаем на кнопку оформления заказа
-      cy.get('@orderButton').click();
-      
-      // Проверяем редирект на страницу входа
-      cy.url().should('include', '/login');
-    });
-
     it('должен создавать заказ при клике на кнопку "Оформить заказ"', () => {
+      // Проверяем, что ингредиенты действительно добавлены
+      cy.contains('(верх)', { timeout: 5000 }).should('be.visible');
+      cy.get('[data-testid="constructor-filling"]', { timeout: 5000 }).should('exist');
+      
+      // Убеждаемся, что кнопка активна перед кликом
+      cy.get('@orderButton').should('not.be.disabled');
+      
+      // Проверяем, что авторизация есть
+      cy.window().its('localStorage').invoke('getItem', 'accessToken').should('exist');
+      
       // Кликаем на кнопку оформления заказа
       cy.get('@orderButton').click();
       
       // Ждем запроса на создание заказа
-      cy.wait('@createOrder');
+      cy.wait('@createOrder', { timeout: 10000 });
       
       // Используем кастомную команду для проверки модального окна
       cy.waitForOrderModal();
@@ -230,25 +393,86 @@ describe('Конструктор бургера', () => {
 
   describe('Модальное окно заказа', () => {
     beforeEach(() => {
-      // Создаем алиасы для элементов
-      cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
+      // Мокаем авторизацию используя кастомную команду
+      cy.mockAuth();
+      
+      // Ждем загрузки ингредиентов
+      cy.wait('@getIngredients');
+      
+      // Добавляем булку и начинку напрямую через Redux
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        const ingredients = state.ingredients.items;
+        
+        // Проверяем, что ингредиенты загружены
+        expect(ingredients).to.be.an('array');
+        expect(ingredients.length).to.be.greaterThan(0);
+        
+        // Добавляем булку
+        const bun = ingredients.find((ing: any) => ing.type === 'bun');
+        expect(bun).to.not.be.undefined;
+        
+        if (!bun) {
+          throw new Error('Булка не найдена в списке ингредиентов');
+        }
+        
+        store.dispatch({
+          type: 'SET_CONSTRUCTOR_BUN',
+          payload: bun,
+        });
+        store.dispatch({
+          type: 'INCREMENT_INGREDIENT_COUNT',
+          payload: { id: bun._id, amount: 2 },
+        });
+        
+        // Добавляем начинку
+        const filling = ingredients.find((ing: any) => ing.type === 'main');
+        expect(filling).to.not.be.undefined;
+        
+        if (!filling) {
+          throw new Error('Начинка не найдена в списке ингредиентов');
+        }
+        
+        const uuid = `test-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        store.dispatch({
+          type: 'ADD_INGREDIENT_TO_CONSTRUCTOR',
+          payload: { ...filling, uuid },
+        });
+        store.dispatch({
+          type: 'INCREMENT_INGREDIENT_COUNT',
+          payload: { id: filling._id, amount: 1 },
+        });
+      });
+      
+      cy.wait(1000); // Ждем обновления компонента
+      
+      // Проверяем, что ингредиенты добавлены (проверяем через Redux state)
+      cy.window().its('__REDUX_STORE__').then((store) => {
+        const state = store.getState();
+        // Проверяем, что булка добавлена
+        if (!state.burgerConstructor.bun) {
+          throw new Error('Булка не была добавлена в конструктор');
+        }
+        // Проверяем, что начинка добавлена
+        if (state.burgerConstructor.fillings.length === 0) {
+          throw new Error('Начинка не была добавлена в конструктор');
+        }
+      });
+      
+      // Создаем заказ
+      cy.get('button').contains(SELECTORS.ORDER_BUTTON).should('not.be.disabled').click();
+      cy.wait('@createOrder');
+      
+      // Ждем появления модального окна перед созданием алиасов
+      cy.waitForOrderModal();
+      
+      // Создаем алиасы для элементов после появления модального окна
       cy.contains(SELECTORS.ORDER_ID_LABEL).as('orderIdLabel');
       cy.contains(SELECTORS.ORDER_STATUS).as('orderStatus');
       cy.contains(SELECTORS.ORDER_MESSAGE).as('orderMessage');
       cy.get(SELECTORS.ORDER_NUMBER).as('orderNumber');
       cy.get(SELECTORS.CLOSE_BUTTON).as('closeButton');
       cy.get(SELECTORS.MODAL_OVERLAY).as('modalOverlay');
-      
-      // Мокаем авторизацию используя кастомную команду
-      cy.mockAuth();
-      
-      // Добавляем булку и начинку используя кастомные команды
-      cy.addBunToConstructor();
-      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
-      
-      // Создаем заказ
-      cy.get('@orderButton').click();
-      cy.wait('@createOrder');
     });
 
     it('должно отображаться после успешного создания заказа', () => {

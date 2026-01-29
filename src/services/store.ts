@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, Reducer } from 'redux';
+import { createStore, applyMiddleware, Reducer, compose } from 'redux';
 import { thunk } from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './reducers';
@@ -19,10 +19,14 @@ import {
   WS_USER_ORDERS_GET_MESSAGE,
 } from './actions/userOrdersActions';
 
-const composeEnhancers = composeWithDevTools({
-  trace: true,
-  traceLimit: 25,
-});
+// Используем DevTools если доступны, иначе обычный compose
+const composeEnhancers =
+  typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? composeWithDevTools({
+        trace: true,
+        traceLimit: 25,
+      })
+    : compose;
 
 // Конфигурация для ленты заказов (публичная)
 const feedWsConfig = {

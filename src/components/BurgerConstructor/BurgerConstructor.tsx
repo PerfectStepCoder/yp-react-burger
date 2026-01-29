@@ -80,6 +80,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) =
     <section
       ref={dropRef as any}
       className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}
+      data-testid="constructor-drop-zone"
     >
       <div className={String(styles.constructor)}>
         <div className={`${styles.bunWrapper} mb-4`}>
