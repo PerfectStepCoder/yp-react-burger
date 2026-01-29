@@ -30,6 +30,8 @@ const initialState: AuthState = {
   isAuthenticated: false,
 };
 
+export { initialState as authInitialState };
+
 const authReducer = (state: AuthState = initialState, action: AuthAction): AuthState => {
   switch (action.type) {
     case REGISTER_REQUEST:

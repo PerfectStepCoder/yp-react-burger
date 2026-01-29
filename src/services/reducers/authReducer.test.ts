@@ -1,13 +1,4 @@
-import authReducer from './authReducer';
-
-const initialState = {
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isLoading: false,
-  error: null,
-  isAuthenticated: false,
-} as any;
+import authReducer, { authInitialState } from './authReducer';
 import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -44,21 +35,14 @@ describe('authReducer', () => {
 
   describe('initial state', () => {
     it('should return the initial state', () => {
-      expect(authReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)).toEqual({
-        user: null,
-        accessToken: null,
-        refreshToken: null,
-        isLoading: false,
-        error: null,
-        isAuthenticated: false,
-      });
+      expect(authReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)).toEqual(authInitialState);
     });
   });
 
   describe('REGISTER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: REGISTER_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -74,7 +58,7 @@ describe('authReducer', () => {
         },
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.user).toEqual(mockUser);
@@ -94,7 +78,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -106,7 +90,7 @@ describe('authReducer', () => {
   describe('LOGIN_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: LOGIN_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -122,7 +106,7 @@ describe('authReducer', () => {
         },
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.user).toEqual(mockUser);
@@ -142,7 +126,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -154,7 +138,7 @@ describe('authReducer', () => {
   describe('LOGOUT_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: LOGOUT_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -172,7 +156,7 @@ describe('authReducer', () => {
         isAuthenticated: true,
       } as any;
       const state = authReducer(currentState, action);
-      expect(state).toEqual(initialState);
+      expect(state).toEqual(authInitialState);
     });
   });
 
@@ -184,7 +168,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -196,7 +180,7 @@ describe('authReducer', () => {
   describe('UPDATE_TOKEN_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: UPDATE_TOKEN_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -213,7 +197,7 @@ describe('authReducer', () => {
         payload: newTokens,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.accessToken).toBe(newTokens.accessToken);
@@ -231,7 +215,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -243,7 +227,7 @@ describe('authReducer', () => {
   describe('GET_USER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: GET_USER_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -256,7 +240,7 @@ describe('authReducer', () => {
         payload: mockUser,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.user).toEqual(mockUser);
@@ -274,7 +258,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -286,7 +270,7 @@ describe('authReducer', () => {
   describe('UPDATE_USER_REQUEST', () => {
     it('should set isLoading to true and clear error', () => {
       const action = { type: UPDATE_USER_REQUEST } as any;
-      const state = authReducer(initialState, action);
+      const state = authReducer(authInitialState, action);
       expect(state.isLoading).toBe(true);
       expect(state.error).toBe(null);
     });
@@ -303,7 +287,7 @@ describe('authReducer', () => {
         payload: updatedUser,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.user).toEqual(updatedUser);
@@ -321,7 +305,7 @@ describe('authReducer', () => {
         payload: errorMessage,
       } as any;
       const state = authReducer(
-        { ...initialState, isLoading: true },
+        { ...authInitialState, isLoading: true },
         action
       );
       expect(state.error).toBe(errorMessage);
@@ -337,7 +321,7 @@ describe('authReducer', () => {
         payload: mockTokens,
       } as any;
       const currentState = {
-        ...initialState,
+        ...authInitialState,
         user: mockUser,
         isAuthenticated: true,
       } as any;

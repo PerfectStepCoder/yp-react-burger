@@ -1,4 +1,4 @@
-import userOrdersReducer from './userOrdersReducer';
+import userOrdersReducer, { userOrdersInitialState } from './userOrdersReducer';
 import {
   WS_USER_ORDERS_CONNECTION_START,
   WS_USER_ORDERS_CONNECTION_SUCCESS,
@@ -9,13 +9,6 @@ import {
 import { FeedOrder, FeedResponse } from '../../utils/types';
 
 describe('userOrdersReducer', () => {
-  const initialState = {
-    orders: [],
-    total: 0,
-    totalToday: 0,
-    wsConnected: false,
-    error: undefined,
-  };
 
   const mockOrder: FeedOrder = {
     _id: 'order-1',
@@ -37,14 +30,14 @@ describe('userOrdersReducer', () => {
     it('should return the initial state', () => {
       expect(
         userOrdersReducer(undefined, { type: 'UNKNOWN_ACTION' } as any)
-      ).toEqual(initialState);
+      ).toEqual(userOrdersInitialState);
     });
   });
 
   describe('WS_USER_ORDERS_CONNECTION_START', () => {
     it('should clear error', () => {
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         error: 'Previous error',
       };
       const action = { type: WS_USER_ORDERS_CONNECTION_START } as any;
@@ -57,14 +50,14 @@ describe('userOrdersReducer', () => {
   describe('WS_USER_ORDERS_CONNECTION_SUCCESS', () => {
     it('should set wsConnected to true and clear error', () => {
       const action = { type: WS_USER_ORDERS_CONNECTION_SUCCESS } as any;
-      const state = userOrdersReducer(initialState, action);
+      const state = userOrdersReducer(userOrdersInitialState, action);
       expect(state.wsConnected).toBe(true);
       expect(state.error).toBeUndefined();
     });
 
     it('should clear error if it exists', () => {
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         error: 'Connection error',
       } as any;
       const action = { type: WS_USER_ORDERS_CONNECTION_SUCCESS } as any;
@@ -82,7 +75,7 @@ describe('userOrdersReducer', () => {
         payload: errorMessage,
       } as any;
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         wsConnected: true,
       } as any;
       const state = userOrdersReducer(currentState, action);
@@ -94,7 +87,7 @@ describe('userOrdersReducer', () => {
   describe('WS_USER_ORDERS_CONNECTION_CLOSED', () => {
     it('should set wsConnected to false and clear error', () => {
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         wsConnected: true,
         error: 'Some error',
       };
@@ -111,7 +104,7 @@ describe('userOrdersReducer', () => {
         type: WS_USER_ORDERS_GET_MESSAGE,
         payload: mockFeedResponse,
       } as any;
-      const state = userOrdersReducer(initialState, action);
+      const state = userOrdersReducer(userOrdersInitialState, action);
       expect(state.orders).toEqual(mockFeedResponse.orders);
       expect(state.total).toBe(mockFeedResponse.total);
       expect(state.totalToday).toBe(mockFeedResponse.totalToday);
@@ -129,7 +122,7 @@ describe('userOrdersReducer', () => {
         type: WS_USER_ORDERS_GET_MESSAGE,
         payload: emptyResponse,
       } as any;
-      const state = userOrdersReducer(initialState, action);
+      const state = userOrdersReducer(userOrdersInitialState, action);
       expect(state.orders).toEqual([]);
       expect(state.total).toBe(0);
       expect(state.totalToday).toBe(0);
@@ -146,7 +139,7 @@ describe('userOrdersReducer', () => {
         type: WS_USER_ORDERS_GET_MESSAGE,
         payload: partialResponse as FeedResponse,
       } as any;
-      const state = userOrdersReducer(initialState, action);
+      const state = userOrdersReducer(userOrdersInitialState, action);
       expect(state.orders).toEqual([]);
       expect(state.total).toBe(0);
       expect(state.totalToday).toBe(0);
@@ -154,7 +147,7 @@ describe('userOrdersReducer', () => {
 
     it('should replace existing orders', () => {
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         orders: [mockOrder],
         total: 25,
         totalToday: 3,
@@ -185,7 +178,7 @@ describe('userOrdersReducer', () => {
   describe('unknown action', () => {
     it('should return current state for unknown action', () => {
       const currentState = {
-        ...initialState,
+        ...userOrdersInitialState,
         orders: [mockOrder],
         wsConnected: true,
       } as any;
