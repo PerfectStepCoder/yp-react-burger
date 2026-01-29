@@ -2,9 +2,8 @@ import { SELECTORS } from '../support/selectors';
 
 describe('Конструктор бургера', () => {
   beforeEach(() => {
-    // Мокаем API запросы
-    cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
-    cy.intercept('POST', '**/api/orders', { fixture: 'order.json' }).as('createOrder');
+    // Мокаем API запросы используя кастомную команду
+    cy.setupConstructorIntercepts();
     
     // Переходим на главную страницу
     cy.visit('/');
@@ -28,19 +27,17 @@ describe('Конструктор бургера', () => {
     });
 
     it('должен переключаться между вкладками', () => {
-      // Создаем алиасы для вкладок и карточек
-      cy.contains(SELECTORS.SAUCES_TAB).as('saucesTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
+      // Используем кастомную команду для переключения вкладок
       cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
       
       // Кликаем на вкладку "Соусы"
-      cy.get('@saucesTab').click();
+      cy.clickTab(SELECTORS.SAUCES_TAB);
       
       // Проверяем, что отображаются соусы
       cy.get('@ingredientCards').should('be.visible');
       
       // Кликаем на вкладку "Начинки"
-      cy.get('@mainsTab').click();
+      cy.clickTab(SELECTORS.MAINS_TAB);
       
       // Проверяем, что отображаются начинки
       cy.get('@ingredientCards').should('be.visible');
@@ -77,76 +74,39 @@ describe('Конструктор бургера', () => {
     });
 
     it('должен перетаскивать начинку в конструктор', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
-      cy.contains(SELECTORS.BUN_TOP).as('bunTop');
+      // Используем кастомные команды для добавления ингредиентов
       cy.get(SELECTORS.CONSTRUCTOR_FILLING).as('constructorFillings');
       
-      // Сначала добавляем булку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
+      // Сначала добавляем булку используя кастомную команду
+      cy.addBunToConstructor();
       
-      // Ждем появления булки
-      cy.get('@bunTop', { timeout: 5000 }).should('be.visible');
-      
-      // Перетаскиваем начинку
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().as('fillingCard');
-      
-      // Проверяем видимость зоны для начинки
-      cy.get('@fillingDropZone').should('be.visible');
-      
-      // Перетаскиваем начинку
-      cy.get('@fillingCard').trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('dragover').trigger('drop');
+      // Перетаскиваем начинку используя кастомную команду
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
       
       // Проверяем, что начинка появилась в конструкторе
       cy.get('@constructorFillings', { timeout: 5000 }).should('have.length.greaterThan', 0);
     });
 
     it('должен перетаскивать соус в конструктор', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.SAUCES_TAB).as('saucesTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
+      // Используем кастомные команды для добавления ингредиентов
       cy.get(SELECTORS.CONSTRUCTOR_FILLING).as('constructorFillings');
       
-      // Сначала добавляем булку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
+      // Сначала добавляем булку используя кастомную команду
+      cy.addBunToConstructor();
       
-      // Перетаскиваем соус
-      cy.get('@saucesTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('dragover').trigger('drop');
+      // Перетаскиваем соус используя кастомную команду
+      cy.addFillingToConstructor(SELECTORS.SAUCES_TAB);
       
       // Проверяем, что соус появился в конструкторе
       cy.get('@constructorFillings', { timeout: 5000 }).should('have.length.greaterThan', 0);
     });
 
     it('должен обновлять счетчик ингредиентов при добавлении', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
+      // Используем кастомную команду для добавления булки
       cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.BUN_TOP).as('bunTop');
       
-      // Добавляем булку
-      cy.get('@bunsTab').click();
-      
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
-      
-      // Проверяем, что булка появилась в конструкторе
-      cy.get('@bunTop', { timeout: 5000 }).should('be.visible');
+      // Добавляем булку используя кастомную команду
+      cy.addBunToConstructor();
       
       // Проверяем, что ингредиент все еще существует в списке
       cy.get('@ingredientCards').first().should('exist');
@@ -155,21 +115,10 @@ describe('Конструктор бургера', () => {
 
   describe('Удаление ингредиентов из конструктора', () => {
     beforeEach(() => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
-      
+      // Используем кастомные команды для добавления ингредиентов
       // Добавляем булку и начинку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('drop');
-      
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('drop');
+      cy.addBunToConstructor();
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
     });
 
     it('должен удалять начинку из конструктора', () => {
@@ -189,25 +138,13 @@ describe('Конструктор бургера', () => {
 
   describe('Подсчет стоимости заказа', () => {
     it('должен правильно считать стоимость заказа', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
+      // Используем кастомные команды для добавления ингредиентов
       cy.get(SELECTORS.ORDER_TOTAL).as('orderTotal');
       
-      // Добавляем булку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
-      
+      // Добавляем булку и начинку используя кастомные команды
+      cy.addBunToConstructor();
       cy.wait(1000);
-      
-      // Добавляем начинку
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('dragover').trigger('drop');
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
       
       // Проверяем, что цена отображается
       cy.get('@orderTotal', { timeout: 5000 }).should('be.visible');
@@ -217,68 +154,44 @@ describe('Конструктор бургера', () => {
 
   describe('Создание заказа', () => {
     beforeEach(() => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
+      // Используем кастомные команды
       cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
       
-      // Мокаем авторизацию
-      cy.window().then((win) => {
-        win.localStorage.setItem('accessToken', 'mock-token');
-      });
+      // Мокаем авторизацию используя кастомную команду
+      cy.mockAuth();
       
-      // Добавляем булку и начинку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
-      
+      // Добавляем булку и начинку используя кастомные команды
+      cy.addBunToConstructor();
       cy.wait(1000); // Ждем обновления состояния
-      
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('dragover').trigger('drop');
-      
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
       cy.wait(1000); // Ждем обновления состояния
     });
 
     it('должен быть неактивна кнопка "Оформить заказ" без булки', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
+      // Используем кастомные команды
       cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
       
       // Очищаем конструктор
       cy.visit('/');
       cy.wait('@getIngredients');
       
-      // Добавляем только начинку
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('dragover').trigger('drop');
+      // Добавляем только начинку используя кастомную команду
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
       
       // Проверяем, что кнопка неактивна
       cy.get('@orderButton').should('be.disabled');
     });
 
     it('должен быть неактивна кнопка "Оформить заказ" без начинки', () => {
-      // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
+      // Используем кастомные команды
       cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
       
       // Очищаем конструктор
       cy.visit('/');
       cy.wait('@getIngredients');
       
-      // Добавляем только булку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('dragover').trigger('drop');
+      // Добавляем только булку используя кастомную команду
+      cy.addBunToConstructor();
       
       // Проверяем, что кнопка неактивна
       cy.get('@orderButton').should('be.disabled');
@@ -293,10 +206,8 @@ describe('Конструктор бургера', () => {
       // Используем алиас из beforeEach
       cy.get('@orderButton');
       
-      // Очищаем токен
-      cy.window().then((win) => {
-        win.localStorage.removeItem('accessToken');
-      });
+      // Очищаем токен используя кастомную команду
+      cy.clearAuth();
       
       // Кликаем на кнопку оформления заказа
       cy.get('@orderButton').click();
@@ -306,30 +217,20 @@ describe('Конструктор бургера', () => {
     });
 
     it('должен создавать заказ при клике на кнопку "Оформить заказ"', () => {
-      // Создаем алиасы для элементов модального окна
-      cy.contains(SELECTORS.ORDER_ID_LABEL).as('orderIdLabel');
-      cy.contains(SELECTORS.ORDER_STATUS).as('orderStatus');
-      
       // Кликаем на кнопку оформления заказа
       cy.get('@orderButton').click();
       
       // Ждем запроса на создание заказа
       cy.wait('@createOrder');
       
-      // Проверяем, что модальное окно с заказом появилось
-      cy.get('@orderIdLabel').should('be.visible');
-      cy.get('@orderStatus').should('be.visible');
+      // Используем кастомную команду для проверки модального окна
+      cy.waitForOrderModal();
     });
   });
 
   describe('Модальное окно заказа', () => {
     beforeEach(() => {
       // Создаем алиасы для элементов
-      cy.contains(SELECTORS.BUNS_TAB).as('bunsTab');
-      cy.contains(SELECTORS.MAINS_TAB).as('mainsTab');
-      cy.get(SELECTORS.INGREDIENT_CARD).as('ingredientCards');
-      cy.contains(SELECTORS.BUN_DROP_ZONE).as('bunDropZone');
-      cy.contains(SELECTORS.FILLING_DROP_ZONE).as('fillingDropZone');
       cy.get('button').contains(SELECTORS.ORDER_BUTTON).as('orderButton');
       cy.contains(SELECTORS.ORDER_ID_LABEL).as('orderIdLabel');
       cy.contains(SELECTORS.ORDER_STATUS).as('orderStatus');
@@ -338,19 +239,12 @@ describe('Конструктор бургера', () => {
       cy.get(SELECTORS.CLOSE_BUTTON).as('closeButton');
       cy.get(SELECTORS.MODAL_OVERLAY).as('modalOverlay');
       
-      // Мокаем авторизацию
-      cy.window().then((win) => {
-        win.localStorage.setItem('accessToken', 'mock-token');
-      });
+      // Мокаем авторизацию используя кастомную команду
+      cy.mockAuth();
       
-      // Добавляем булку и начинку
-      cy.get('@bunsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@bunDropZone').trigger('drop');
-      
-      cy.get('@mainsTab').click();
-      cy.get('@ingredientCards').first().trigger('dragstart', { dataTransfer: new DataTransfer() });
-      cy.get('@fillingDropZone').trigger('drop');
+      // Добавляем булку и начинку используя кастомные команды
+      cy.addBunToConstructor();
+      cy.addFillingToConstructor(SELECTORS.MAINS_TAB);
       
       // Создаем заказ
       cy.get('@orderButton').click();
@@ -368,8 +262,8 @@ describe('Конструктор бургера', () => {
     });
 
     it('должно закрываться при клике на кнопку закрытия', () => {
-      // Используем алиасы из beforeEach
-      cy.get('@closeButton').click();
+      // Используем кастомную команду для закрытия модального окна
+      cy.closeModal();
       
       // Проверяем, что модальное окно закрылось
       cy.get('@orderIdLabel').should('not.exist');
