@@ -23,6 +23,8 @@ const initialState: FeedState = {
   error: undefined,
 };
 
+export { initialState as feedInitialState };
+
 const feedReducer = (state: FeedState = initialState, action: FeedAction): FeedState => {
   switch (action.type) {
     case WS_FEED_CONNECTION_START:

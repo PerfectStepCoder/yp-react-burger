@@ -16,6 +16,8 @@ const initialState: UserOrdersState = {
   error: undefined,
 };
 
+export { initialState as userOrdersInitialState };
+
 const userOrdersReducer = (state: UserOrdersState = initialState, action: UserOrdersAction): UserOrdersState => {
   switch (action.type) {
     case WS_USER_ORDERS_CONNECTION_START:

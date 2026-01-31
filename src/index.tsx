@@ -9,6 +9,11 @@ import store from './services/store';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+// Делаем store доступным для Cypress тестов
+if (typeof window !== 'undefined') {
+  (window as any).__REDUX_STORE__ = store;
+}
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

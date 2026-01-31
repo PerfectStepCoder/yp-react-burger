@@ -80,6 +80,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) =
     <section
       ref={dropRef as any}
       className={`${styles.wrapper} pt-25 pb-10 pl-10 pr-10`}
+      data-testid="constructor-drop-zone"
     >
       <div className={String(styles.constructor)}>
         <div className={`${styles.bunWrapper} mb-4`}>
@@ -136,7 +137,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrderClick }) =
       </div>
 
       <div className={styles.summary}>
-        <div className={`${styles.total} mr-10`}>
+        <div className={`${styles.total} mr-10`} data-testid="order-total">
           <span className="text text_type_digits-medium mr-2">
             {totalPrice}
           </span>

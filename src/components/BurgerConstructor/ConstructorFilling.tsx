@@ -68,6 +68,7 @@ const ConstructorFilling: React.FC<ConstructorFillingProps> = ({ item, index, mo
   return (
     <li
       ref={ref}
+      data-testid="constructor-filling"
       className={`${styles.item} pb-4`}
       data-handler-id={handlerId}
       style={{
